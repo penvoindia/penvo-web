@@ -1,0 +1,73 @@
+@layer tokens, base;
+
+@layer tokens {
+  :root {
+    /* Penvo brand palette */
+    --color-bright-orange: #ff400c;
+    --color-pink-affair: #ffefe8;
+    --color-full-white: #ffffff;
+    --color-concrete: #f2f2f2;
+    --color-smooth-grey: #cccccc;
+    --color-super-grey: #999999;
+    --color-attractive-black: #222222;
+    --color-pure-black: #000000;
+
+    /* Dark-theme surfaces */
+    --color-background: var(--color-pure-black);
+    --color-surface-primary: var(--color-pure-black);
+    --color-surface-secondary: var(--color-attractive-black);
+    --color-surface-accent: var(--color-pink-affair);
+    --color-surface-inverse: var(--color-full-white);
+
+    /* Dark-theme foregrounds */
+    --color-foreground: var(--color-full-white);
+    --color-text-primary: var(--color-full-white);
+    --color-text-secondary: var(--color-smooth-grey);
+    --color-text-muted: var(--color-super-grey);
+    --color-text-accent: var(--color-pink-affair);
+    --color-text-inverse: var(--color-pure-black);
+
+    /* Interactive colors */
+    --color-action-primary: var(--color-bright-orange);
+    --color-action-primary-foreground: var(--color-pure-black);
+    --color-action-secondary: var(--color-pink-affair);
+    --color-action-secondary-foreground: var(--color-pure-black);
+    --color-focus-ring: var(--color-bright-orange);
+
+    /* Borders and selection */
+    --color-border-subtle: var(--color-attractive-black);
+    --color-border-strong: var(--color-super-grey);
+    --color-selection-background: var(--color-bright-orange);
+    --color-selection-foreground: var(--color-pure-black);
+  }
+}
+
+@layer base {
+  html {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    accent-color: var(--color-action-primary);
+    caret-color: var(--color-action-primary);
+  }
+
+  ::selection {
+    background-color: var(--color-selection-background);
+    color: var(--color-selection-foreground);
+  }
+
+  :focus-visible {
+    outline-color: var(--color-focus-ring);
+  }
+}

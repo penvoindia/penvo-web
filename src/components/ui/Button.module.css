@@ -1,0 +1,155 @@
+/* Chamfered geometry adapted from Rig; reveal interaction adapted from
+   Uiverse.io by kleenpulse. */
+.button {
+  --button-outline-width: 1px;
+  --button-chamfer-size: 14px;
+  --button-inner-corner: calc(
+    var(--button-chamfer-size) + (var(--button-outline-width) * 0.5)
+  );
+  --button-outline-color: var(--color-bright-orange);
+  --button-surface-color: var(--color-bright-orange);
+  --button-outline-ring: polygon(
+    evenodd,
+    var(--button-chamfer-size) 0,
+    100% 0,
+    100% calc(100% - var(--button-chamfer-size)),
+    calc(100% - var(--button-chamfer-size)) 100%,
+    0 100%,
+    0 var(--button-chamfer-size),
+    var(--button-chamfer-size) 0,
+    var(--button-outline-width) var(--button-inner-corner),
+    var(--button-outline-width) calc(100% - var(--button-outline-width)),
+    calc(100% - var(--button-inner-corner))
+      calc(100% - var(--button-outline-width)),
+    calc(100% - var(--button-outline-width))
+      calc(100% - var(--button-inner-corner)),
+    calc(100% - var(--button-outline-width)) var(--button-outline-width),
+    var(--button-inner-corner) var(--button-outline-width),
+    var(--button-outline-width) var(--button-inner-corner)
+  );
+  --button-surface-full: polygon(
+    var(--button-outline-width) var(--button-inner-corner),
+    var(--button-inner-corner) var(--button-outline-width),
+    calc(100% - var(--button-outline-width)) var(--button-outline-width),
+    calc(100% - var(--button-outline-width))
+      calc(100% - var(--button-inner-corner)),
+    calc(100% - var(--button-inner-corner))
+      calc(100% - var(--button-outline-width)),
+    var(--button-outline-width) calc(100% - var(--button-outline-width))
+  );
+  --button-surface-collapsed: polygon(
+    calc(100% - var(--button-outline-width))
+      calc(100% - var(--button-inner-corner)),
+    calc(100% - var(--button-outline-width)) var(--button-outline-width),
+    calc(100% - var(--button-outline-width)) var(--button-outline-width),
+    calc(100% - var(--button-outline-width))
+      calc(100% - var(--button-inner-corner)),
+    calc(100% - var(--button-inner-corner))
+      calc(100% - var(--button-outline-width)),
+    calc(100% - var(--button-inner-corner))
+      calc(100% - var(--button-outline-width))
+  );
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--button-min-height, 50px);
+  padding: var(--button-padding-block, 15px) var(--button-padding-inline, 30px);
+  border: 0;
+  background: transparent;
+  color: var(--button-text);
+  cursor: pointer;
+  text-decoration: none;
+  clip-path: polygon(
+    var(--button-chamfer-size) 0,
+    100% 0,
+    100% calc(100% - var(--button-chamfer-size)),
+    calc(100% - var(--button-chamfer-size)) 100%,
+    0 100%,
+    0 var(--button-chamfer-size)
+  );
+  transition:
+    color 250ms ease,
+    opacity var(--motion-duration-fast) var(--motion-ease-standard);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.primary {
+  --button-text: var(--color-pure-black);
+  --button-hover-text: var(--color-bright-orange);
+}
+
+.secondary {
+  --button-text: var(--color-bright-orange);
+  --button-hover-text: var(--color-pure-black);
+}
+
+.outline,
+.surface {
+  position: absolute;
+  pointer-events: none;
+}
+
+.outline {
+  z-index: 0;
+  inset: 0;
+  background: var(--button-outline-color);
+  clip-path: var(--button-outline-ring);
+}
+
+.surface {
+  z-index: 1;
+  inset: 0;
+  background: var(--button-surface-color);
+  transition: clip-path 500ms ease;
+}
+
+.primary .surface {
+  clip-path: var(--button-surface-full);
+}
+
+.secondary .surface {
+  clip-path: var(--button-surface-collapsed);
+}
+
+.button:where(:hover, :focus-visible):not(:disabled) {
+  color: var(--button-hover-text);
+}
+
+.primary:where(:hover, :focus-visible):not(:disabled) .surface {
+  clip-path: var(--button-surface-collapsed);
+  transition-duration: 200ms;
+}
+
+.secondary:where(:hover, :focus-visible):not(:disabled) .surface {
+  clip-path: var(--button-surface-full);
+  transition-duration: 200ms;
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.label {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@media (forced-colors: active) {
+  .button {
+    border: 1px solid ButtonText;
+    clip-path: none;
+  }
+
+  .outline,
+  .surface {
+    display: none;
+  }
+}
