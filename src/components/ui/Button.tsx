@@ -3,17 +3,22 @@ import type {
   ButtonHTMLAttributes,
   ComponentPropsWithoutRef,
   ReactNode,
+  Ref,
 } from 'react';
 
 import styles from './Button.module.css';
 
 export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonSize = 'default' | 'compact';
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  ref?: Ref<HTMLButtonElement>;
+  size?: ButtonSize;
   variant?: ButtonVariant;
 };
 
 export type ButtonLinkProps = ComponentPropsWithoutRef<typeof Link> & {
+  size?: ButtonSize;
   variant?: ButtonVariant;
 };
 
@@ -42,6 +47,8 @@ function ButtonContents({ children }: { children: ReactNode }) {
 export function Button({
   children,
   className,
+  ref,
+  size = 'default',
   type = 'button',
   variant = 'primary',
   ...props
@@ -49,6 +56,8 @@ export function Button({
   return (
     <button
       className={getButtonClasses(variant, className)}
+      data-size={size}
+      ref={ref}
       type={type}
       {...props}
     >
@@ -60,11 +69,16 @@ export function Button({
 export function ButtonLink({
   children,
   className,
+  size = 'default',
   variant = 'primary',
   ...props
 }: ButtonLinkProps) {
   return (
-    <Link className={getButtonClasses(variant, className)} {...props}>
+    <Link
+      className={getButtonClasses(variant, className)}
+      data-size={size}
+      {...props}
+    >
       <ButtonContents>{children}</ButtonContents>
     </Link>
   );

@@ -2,9 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { ButtonLink } from '@/src/components/ui/Button';
+import { Button, ButtonLink } from '@/src/components/ui/Button';
 
 import styles from './SiteHeader.module.css';
 
@@ -13,6 +14,11 @@ const navigation = [
   { href: '/about', label: 'About' },
   { href: '/blog', label: 'Blog' },
   { href: '/contact', label: 'Contact' },
+] as const;
+
+const mobileNavigation = [
+  { href: '/services', label: 'Services' },
+  ...navigation,
 ] as const;
 
 const services = [
@@ -44,13 +50,63 @@ const services = [
 ] as const;
 
 const servicesMenuId = 'penvo-services-menu';
+const mobileMenuId = 'penvo-mobile-menu';
+
+function getNavigationCurrent(pathname: string, href: string) {
+  if (pathname === href) return 'page';
+  if (pathname.startsWith(`${href}/`)) return 'location';
+
+  return undefined;
+}
+
+function MobileMenuIcon({ isOpen }: { isOpen: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={styles.mobileMenuGlyph}
+      data-open={isOpen}
+    >
+      <svg
+        className={styles.mobileMenuIcon}
+        fill="none"
+        focusable="false"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <path d="M4 5h16" />
+        <path d="M4 12h16" />
+        <path d="M4 19h16" />
+      </svg>
+      <svg
+        className={styles.mobileMenuCloseIcon}
+        fill="none"
+        focusable="false"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg>
+    </span>
+  );
+}
 
 export function SiteHeader() {
+  const pathname = usePathname();
   const headerRef = useRef<HTMLElement>(null);
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuFirstLinkRef = useRef<HTMLAnchorElement>(null);
   const servicesRegionRef = useRef<HTMLLIElement>(null);
   const servicesTriggerRef = useRef<HTMLButtonElement>(null);
   const closeTimerRef = useRef<number | null>(null);
   const openedByHoverRef = useRef(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
 
   const clearCloseTimer = useCallback(() => {
@@ -73,10 +129,54 @@ export function SiteHeader() {
   const scheduleServicesMenuClose = useCallback(() => {
     clearCloseTimer();
     closeTimerRef.current = window.setTimeout(() => {
+      const servicesRegion = servicesRegionRef.current;
+
+      if (
+        servicesRegion?.matches(':hover') ||
+        servicesRegion?.contains(document.activeElement)
+      ) {
+        closeTimerRef.current = null;
+        return;
+      }
+
       setIsServicesOpen(false);
       closeTimerRef.current = null;
     }, 160);
   }, [clearCloseTimer]);
+
+  const openMobileMenu = useCallback(() => {
+    closeServicesMenu();
+
+    if (headerRef.current) {
+      headerRef.current.dataset.hidden = 'false';
+    }
+
+    setIsMobileMenuOpen(true);
+  }, [closeServicesMenu]);
+
+  const closeMobileMenu = useCallback(
+    ({
+      restoreFocus = true,
+    }: {
+      restoreFocus?: boolean;
+    } = {}) => {
+      if (restoreFocus) {
+        mobileMenuTriggerRef.current?.focus({ preventScroll: true });
+      }
+
+      setIsMobileMenuOpen(false);
+    },
+    [],
+  );
+
+  const toggleMobileMenu = useCallback(() => {
+    if (isMobileMenuOpen) {
+      closeMobileMenu();
+      return;
+    }
+
+    openMobileMenu();
+  }, [closeMobileMenu, isMobileMenuOpen, openMobileMenu]);
 
   useEffect(() => {
     const header = headerRef.current;
@@ -84,12 +184,37 @@ export function SiteHeader() {
 
     if (!header) return;
 
-    let previousScrollPosition = 0;
+    let previousScrollPosition = Math.max(window.scrollY, 0);
     let animationFrame = 0;
 
     const updateHeader = () => {
       const scrollPosition = Math.max(window.scrollY, 0);
       const scrollingDown = scrollPosition > previousScrollPosition;
+      const servicesRegion = servicesRegionRef.current;
+      const servicesRegionIsActive = Boolean(
+        servicesRegion &&
+        (servicesRegion.matches(':hover') ||
+          servicesRegion.contains(document.activeElement)),
+      );
+
+      if (header.dataset.mobileMenuOpen === 'true') {
+        header.dataset.compact = String(scrollPosition > 10);
+        header.dataset.hidden = 'false';
+        previousScrollPosition = scrollPosition;
+        animationFrame = 0;
+        return;
+      }
+
+      if (header.dataset.menuOpen === 'true' && servicesRegionIsActive) {
+        header.dataset.hidden = 'false';
+        previousScrollPosition = scrollPosition;
+        animationFrame = 0;
+        return;
+      }
+
+      if (header.dataset.menuOpen === 'true') {
+        setIsServicesOpen(false);
+      }
 
       header.dataset.compact = String(scrollPosition > 10);
       header.dataset.hidden = String(scrollPosition > 400 && scrollingDown);
@@ -98,21 +223,20 @@ export function SiteHeader() {
     };
 
     const handleScroll = () => {
-      if (!landscapeQuery.matches || animationFrame) return;
+      if (animationFrame) return;
 
-      setIsServicesOpen(false);
       animationFrame = window.requestAnimationFrame(updateHeader);
     };
 
     const handleBreakpointChange = () => {
       if (landscapeQuery.matches) {
-        updateHeader();
-        return;
+        setIsMobileMenuOpen(false);
+      } else {
+        openedByHoverRef.current = false;
+        setIsServicesOpen(false);
       }
 
-      header.dataset.compact = 'false';
-      header.dataset.hidden = 'false';
-      setIsServicesOpen(false);
+      updateHeader();
     };
 
     handleBreakpointChange();
@@ -157,6 +281,87 @@ export function SiteHeader() {
     };
   }, [closeServicesMenu, isServicesOpen]);
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      mobileMenuFirstLinkRef.current?.focus({ preventScroll: true });
+    });
+
+    const handleDocumentKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+
+      event.preventDefault();
+      closeMobileMenu();
+    };
+
+    document.addEventListener('keydown', handleDocumentKeyDown);
+
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener('keydown', handleDocumentKeyDown);
+    };
+  }, [closeMobileMenu, isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const body = document.body;
+    const siteContent = document.getElementById('site-content');
+    const scrollPosition = Math.max(window.scrollY, 0);
+    const scrollbarWidth = Math.max(
+      window.innerWidth - document.documentElement.clientWidth,
+      0,
+    );
+    const previousBodyStyles = {
+      overflow: body.style.overflow,
+      paddingRight: body.style.paddingRight,
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+    };
+    const siteContentWasInert = siteContent?.hasAttribute('inert') ?? false;
+
+    if (siteContent && !siteContentWasInert) {
+      siteContent.setAttribute('inert', '');
+    }
+
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollPosition}px`;
+    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+
+    if (scrollbarWidth > 0) {
+      const bodyPaddingRight = Number.parseFloat(
+        window.getComputedStyle(body).paddingRight,
+      );
+
+      body.style.paddingRight = `${bodyPaddingRight + scrollbarWidth}px`;
+    }
+
+    return () => {
+      body.style.overflow = previousBodyStyles.overflow;
+      body.style.paddingRight = previousBodyStyles.paddingRight;
+      body.style.position = previousBodyStyles.position;
+      body.style.top = previousBodyStyles.top;
+      body.style.width = previousBodyStyles.width;
+
+      if (siteContent && !siteContentWasInert) {
+        siteContent.removeAttribute('inert');
+      }
+
+      window.scrollTo(0, scrollPosition);
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    const closeFrame = window.requestAnimationFrame(() => {
+      setIsMobileMenuOpen(false);
+    });
+
+    return () => window.cancelAnimationFrame(closeFrame);
+  }, [pathname]);
+
   useEffect(
     () => () => {
       clearCloseTimer();
@@ -178,14 +383,22 @@ export function SiteHeader() {
 
       <header
         className={styles.siteHeader}
-        data-compact="false"
-        data-hidden="false"
         data-menu-open={isServicesOpen}
+        data-mobile-menu-open={isMobileMenuOpen}
         ref={headerRef}
       >
         <div className={styles.frame}>
           <div className={styles.brandSlot}>
-            <Link aria-label="Penvo home" className={styles.brand} href="/">
+            <Link
+              aria-label="Penvo home"
+              className={styles.brand}
+              href="/"
+              onClick={() =>
+                closeMobileMenu({
+                  restoreFocus: false,
+                })
+              }
+            >
               <Image
                 alt=""
                 className={styles.brandLogo}
@@ -218,7 +431,16 @@ export function SiteHeader() {
                   openedByHoverRef.current = true;
                   openServicesMenu();
                 }}
-                onPointerLeave={() => {
+                onPointerLeave={(event) => {
+                  if (event.pointerType !== 'mouse') return;
+
+                  if (
+                    event.relatedTarget instanceof Node &&
+                    event.currentTarget.contains(event.relatedTarget)
+                  ) {
+                    return;
+                  }
+
                   openedByHoverRef.current = false;
                   scheduleServicesMenuClose();
                 }}
@@ -226,6 +448,11 @@ export function SiteHeader() {
               >
                 <button
                   aria-controls={servicesMenuId}
+                  aria-current={
+                    getNavigationCurrent(pathname, '/services')
+                      ? 'location'
+                      : undefined
+                  }
                   aria-expanded={isServicesOpen}
                   className={`${styles.navigationControl} ${styles.servicesTrigger} type-navigation`}
                   id="penvo-services-trigger"
@@ -245,7 +472,7 @@ export function SiteHeader() {
                   ref={servicesTriggerRef}
                   type="button"
                 >
-                  Services
+                  <span className={styles.navigationLabel}>Services</span>
                 </button>
 
                 <div
@@ -253,8 +480,6 @@ export function SiteHeader() {
                   className={styles.servicesPopover}
                   data-open={isServicesOpen}
                   id={servicesMenuId}
-                  onPointerEnter={clearCloseTimer}
-                  onPointerLeave={scheduleServicesMenuClose}
                 >
                   <div className={styles.servicesPanel}>
                     <ul
@@ -264,13 +489,16 @@ export function SiteHeader() {
                       {services.map((service) => (
                         <li className={styles.serviceItem} key={service.href}>
                           <Link
+                            aria-current={
+                              pathname === service.href ? 'page' : undefined
+                            }
                             className={styles.serviceLink}
                             href={service.href}
                             onClick={closeServicesMenu}
                             tabIndex={isServicesOpen ? 0 : -1}
                           >
                             <span
-                              className={`${styles.serviceTitle} type-heading-6`}
+                              className={`${styles.serviceTitle} type-heading-7`}
                             >
                               {service.label}
                             </span>
@@ -286,6 +514,9 @@ export function SiteHeader() {
 
                     <div className={styles.servicesOverviewColumn}>
                       <Link
+                        aria-current={
+                          pathname === '/services' ? 'page' : undefined
+                        }
                         className={styles.servicesOverview}
                         href="/services"
                         onClick={closeServicesMenu}
@@ -293,7 +524,7 @@ export function SiteHeader() {
                       >
                         <span className={styles.servicesOverviewCopy}>
                           <span
-                            className={`${styles.servicesOverviewTitle} type-heading-5`}
+                            className={`${styles.servicesOverviewTitle} type-heading-6`}
                           >
                             View all services
                           </span>
@@ -301,7 +532,7 @@ export function SiteHeader() {
                             className={`${styles.servicesOverviewDescription} type-body-small`}
                           >
                             Explore how Penvo combines strategy, creativity, and
-                            technology to move brands forward.
+                            technology for your own brand.
                           </span>
                         </span>
 
@@ -326,10 +557,11 @@ export function SiteHeader() {
               {navigation.map((item) => (
                 <li key={item.href} onPointerEnter={closeServicesMenu}>
                   <Link
+                    aria-current={getNavigationCurrent(pathname, item.href)}
                     className={`${styles.navigationControl} type-navigation`}
                     href={item.href}
                   >
-                    {item.label}
+                    <span className={styles.navigationLabel}>{item.label}</span>
                   </Link>
                 </li>
               ))}
@@ -345,8 +577,78 @@ export function SiteHeader() {
               Start a project
             </ButtonLink>
           </div>
+
+          <div className={styles.mobileActions}>
+            <Button
+              aria-controls={mobileMenuId}
+              aria-expanded={isMobileMenuOpen}
+              aria-label={
+                isMobileMenuOpen ? 'Close main menu' : 'Open main menu'
+              }
+              className={styles.mobileMenuToggle}
+              onClick={toggleMobileMenu}
+              ref={mobileMenuTriggerRef}
+              variant="secondary"
+            >
+              <MobileMenuIcon isOpen={isMobileMenuOpen} />
+            </Button>
+          </div>
         </div>
       </header>
+
+      <div
+        aria-hidden={!isMobileMenuOpen}
+        className={styles.mobileDrawer}
+        data-open={isMobileMenuOpen}
+        id={mobileMenuId}
+        inert={!isMobileMenuOpen}
+        onPointerDown={(event) => {
+          if (event.target !== event.currentTarget) return;
+
+          closeMobileMenu();
+        }}
+      >
+        <div className={styles.mobileDrawerInner}>
+          <nav aria-label="Mobile primary navigation">
+            <ul className={styles.mobileNavigationList}>
+              {mobileNavigation.map((item, index) => (
+                <li className={styles.mobileNavigationItem} key={item.href}>
+                  <Link
+                    aria-current={getNavigationCurrent(pathname, item.href)}
+                    className={`${styles.mobileNavigationControl} type-navigation`}
+                    href={item.href}
+                    onClick={() =>
+                      closeMobileMenu({
+                        restoreFocus: false,
+                      })
+                    }
+                    ref={index === 0 ? mobileMenuFirstLinkRef : undefined}
+                    tabIndex={isMobileMenuOpen ? 0 : -1}
+                  >
+                    <span className={styles.mobileNavigationLabel}>
+                      {item.label}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <ButtonLink
+            className={styles.mobileDrawerProjectLink}
+            href="/start-a-project"
+            onClick={() =>
+              closeMobileMenu({
+                restoreFocus: false,
+              })
+            }
+            tabIndex={isMobileMenuOpen ? 0 : -1}
+            variant="primary"
+          >
+            Start a project
+          </ButtonLink>
+        </div>
+      </div>
     </>
   );
 }

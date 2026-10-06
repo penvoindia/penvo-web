@@ -1,7 +1,14 @@
 .page {
   min-height: 100vh;
+  padding-top: 80px;
   background: var(--color-background);
   color: var(--color-foreground);
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .page {
+    padding-top: 88px;
+  }
 }
 
 @media (min-width: 1024px) {

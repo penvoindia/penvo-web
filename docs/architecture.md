@@ -21,5 +21,12 @@
 - `tests/` — fast foundation and contract tests
 - `docs/` — product and engineering decisions
 
-The root route is a temporary, non-production design-guide screen used to test
-the approved foundations while the website is built one decision at a time.
+The root route begins the homepage with the approved reference-inspired hero.
+The temporary foundation guide remains available at `/design-guide` while the
+website is built one decision at a time. Homepage components live under
+`src/components/home/`; browser motion is isolated from server-rendered copy.
+The hero is followed by `HomeBuild`, the scroll-driven “Let’s build” section.
+`HomeServices` overlaps its final quiet tail for a continuous visual handoff,
+then `HomeWorkTogether` provides the contact marquee. `HomeProcess` follows it
+with server-rendered process content and a small client controller for the
+desktop and tablet horizontal scroll progression.

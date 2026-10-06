@@ -55,6 +55,10 @@
     --type-heading-6-line-height: 24px;
     --type-heading-6-letter-spacing: -0.45px;
 
+    --type-heading-7-size: 16px;
+    --type-heading-7-line-height: 22px;
+    --type-heading-7-letter-spacing: -0.4px;
+
     /* Reading roles */
     --type-lead-size: 20px;
     --type-lead-line-height: 28px;
@@ -85,13 +89,18 @@
     --type-label-line-height: 16px;
     --type-label-letter-spacing: 1.2px;
 
-    --type-button-size: 14px;
-    --type-button-line-height: 20px;
-    --type-button-letter-spacing: 0.35px;
+    --type-button-size: 16px;
+    --type-button-line-height: 24px;
+    --type-button-letter-spacing: -0.4px;
 
-    --type-navigation-size: 14px;
-    --type-navigation-line-height: 20px;
-    --type-navigation-letter-spacing: 0.35px;
+    /* Compact filters: shared Button size="compact", all breakpoints */
+    --type-button-compact-size: 14px;
+    --type-button-compact-line-height: 20px;
+    --type-button-compact-letter-spacing: -0.35px;
+
+    --type-navigation-size: 16px;
+    --type-navigation-line-height: 24px;
+    --type-navigation-letter-spacing: -0.4px;
 
     --type-micro-size: 10px;
     --type-micro-line-height: 14px;
@@ -136,6 +145,10 @@
       --type-heading-6-size: 18px;
       --type-heading-6-line-height: 26px;
       --type-heading-6-letter-spacing: -0.45px;
+
+      --type-heading-7-size: 16px;
+      --type-heading-7-line-height: 24px;
+      --type-heading-7-letter-spacing: -0.4px;
 
       --type-lead-size: 22px;
       --type-lead-line-height: 30px;
@@ -185,6 +198,10 @@
       --type-heading-6-line-height: 28px;
       --type-heading-6-letter-spacing: -0.5px;
 
+      --type-heading-7-size: 18px;
+      --type-heading-7-line-height: 26px;
+      --type-heading-7-letter-spacing: -0.45px;
+
       --type-lead-size: 24px;
       --type-lead-line-height: 32px;
     }
@@ -232,6 +249,10 @@
       --type-heading-6-size: 20px;
       --type-heading-6-line-height: 28px;
       --type-heading-6-letter-spacing: -0.5px;
+
+      --type-heading-7-size: 18px;
+      --type-heading-7-line-height: 26px;
+      --type-heading-7-letter-spacing: -0.45px;
     }
   }
 }
@@ -336,6 +357,14 @@
     line-height: var(--type-heading-6-line-height);
   }
 
+  .type-heading-7 {
+    font-family: var(--font-primary);
+    font-size: var(--type-heading-7-size);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--type-heading-7-letter-spacing);
+    line-height: var(--type-heading-7-line-height);
+  }
+
   .type-lead {
     font-family: var(--font-secondary);
     font-size: var(--type-lead-size);
@@ -395,17 +424,17 @@
   }
 
   .type-button {
-    font-family: var(--font-primary);
+    font-family: var(--font-secondary);
     font-size: var(--type-button-size);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-medium);
     letter-spacing: var(--type-button-letter-spacing);
     line-height: var(--type-button-line-height);
   }
 
   .type-navigation {
-    font-family: var(--font-primary);
+    font-family: var(--font-secondary);
     font-size: var(--type-navigation-size);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-medium);
     letter-spacing: var(--type-navigation-letter-spacing);
     line-height: var(--type-navigation-line-height);
   }

@@ -56,7 +56,7 @@
   align-items: center;
   justify-content: center;
   min-height: var(--button-min-height, 50px);
-  padding: var(--button-padding-block, 15px) var(--button-padding-inline, 30px);
+  padding: var(--button-padding-block, 13px) var(--button-padding-inline, 30px);
   border: 0;
   background: transparent;
   color: var(--button-text);
@@ -74,6 +74,16 @@
     color 250ms ease,
     opacity var(--motion-duration-fast) var(--motion-ease-standard);
   -webkit-tap-highlight-color: transparent;
+}
+
+.button[data-size='compact'] {
+  --button-min-height: 32px;
+  --button-padding-block: 6px;
+  --button-padding-inline: 14px;
+  --button-chamfer-size: 6px;
+  --type-button-size: var(--type-button-compact-size);
+  --type-button-line-height: var(--type-button-compact-line-height);
+  --type-button-letter-spacing: var(--type-button-compact-letter-spacing);
 }
 
 .primary {
@@ -97,6 +107,7 @@
   inset: 0;
   background: var(--button-outline-color);
   clip-path: var(--button-outline-ring);
+  transition: background-color 250ms ease;
 }
 
 .surface {

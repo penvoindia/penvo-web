@@ -1,0 +1,152 @@
+.section {
+  position: relative;
+  overflow: clip;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.pin {
+  position: relative;
+}
+
+.track {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 72svh;
+  padding: 80px var(--layout-gutter);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.step {
+  color: var(--color-attractive-black);
+  white-space: nowrap;
+}
+
+.stepPixel {
+  display: inline-block;
+  width: 0.16em;
+  height: 0.16em;
+  margin-inline-start: 0.04em;
+  vertical-align: baseline;
+  background: var(--color-bright-orange);
+}
+
+.title {
+  margin-top: 16px;
+}
+
+.introSubtitle {
+  margin-bottom: 20px;
+  color: var(--color-bright-orange);
+}
+
+.introTitle {
+  max-width: 6em;
+  text-wrap: balance;
+}
+
+.body {
+  max-width: 520px;
+  margin-top: 20px;
+  color: var(--color-text-secondary);
+}
+
+.introPanel {
+  align-items: flex-start;
+}
+
+.action {
+  margin-top: 24px;
+}
+
+.progressTrack {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .section[data-layout='horizontal'] .pin {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .section[data-layout='horizontal'] .track {
+    flex: none;
+    flex-direction: row;
+    width: max-content;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .section[data-layout='horizontal'] .panel {
+    flex: 0 0 min(86vw, 980px);
+    width: min(86vw, 980px);
+    height: 74svh;
+    min-height: 0;
+    padding: 0 7vw;
+    border-right: 1px solid var(--color-border-subtle);
+    border-bottom: 0;
+  }
+
+  .section[data-layout='horizontal'] .progressTrack {
+    position: absolute;
+    bottom: clamp(40px, 5vh, 54px);
+    left: 50%;
+    display: block;
+    width: clamp(180px, 14vw, 240px);
+    height: 3px;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--color-border-subtle);
+    transform: translateX(-50%);
+  }
+
+  .progress {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--color-bright-orange);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section[data-layout] {
+    height: auto !important;
+  }
+
+  .section[data-layout] .pin {
+    position: relative;
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+
+  .section[data-layout] .track {
+    flex-direction: column;
+    width: auto;
+    transform: none !important;
+  }
+
+  .section[data-layout] .panel {
+    width: auto;
+    height: auto;
+    min-height: 72svh;
+    padding: 80px var(--layout-gutter);
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .section[data-layout] .progressTrack {
+    display: none;
+  }
+}

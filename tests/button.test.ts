@@ -11,7 +11,7 @@ const buttonCss = readFileSync(
   'utf8',
 );
 const guideSource = readFileSync(
-  new URL('../app/page.tsx', import.meta.url),
+  new URL('../app/design-guide/page.tsx', import.meta.url),
   'utf8',
 );
 
@@ -34,7 +34,7 @@ describe('Penvo button', () => {
     expect(buttonCss).toContain('display: inline-flex');
     expect(buttonCss).toContain('gap: 8px');
     expect(buttonCss).toContain('min-height: var(--button-min-height, 50px)');
-    expect(buttonCss).toContain('var(--button-padding-block, 15px)');
+    expect(buttonCss).toContain('var(--button-padding-block, 13px)');
     expect(buttonCss).toContain('var(--button-padding-inline, 30px)');
     expect(buttonCss).toContain('clip-path: polygon(');
   });

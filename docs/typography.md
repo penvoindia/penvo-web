@@ -2,13 +2,17 @@
 
 ## Font families
 
-- Primary: Bricolage Grotesque — display, headings, section titles, navigation,
-  buttons, labels, eyebrows, and microcopy.
-- Secondary: Hanken Grotesk — lead text, paragraphs, captions, and long-form
-  reading.
+- Primary: Bricolage Grotesque — display, headings, section titles, labels,
+  eyebrows, and microcopy.
+- Secondary: Hanken Grotesk — lead text, paragraphs, captions, long-form
+  reading, buttons, and navigation.
+- Available: Pixelify Sans — registered as `--font-pixelify-sans` for future
+  use, but not assigned to any current typography role or component.
 
-Both variable fonts are sourced from Google Fonts through `next/font/google`,
-preloaded, optimized during the build, and served by the website.
+All three variable fonts are sourced from Google Fonts through
+`next/font/google`, optimized during the build, and served by the website.
+Bricolage Grotesque and Hanken Grotesk are preloaded; unused Pixelify Sans is
+not preloaded.
 
 ## Reference translation
 
@@ -66,6 +70,7 @@ All heading roles use Bricolage Grotesque with natural casing.
 | `.type-heading-4` | 700    | `24px / 32px / -0.6px`  | `28px / 34px / -0.7px`  | `28px / 36px / -0.7px`  | `30px / 36px / -0.75px` |
 | `.type-heading-5` | 600    | `20px / 28px / -0.5px`  | `22px / 30px / -0.55px` | `24px / 32px / -0.6px`  | `24px / 32px / -0.6px`  |
 | `.type-heading-6` | 600    | `18px / 24px / -0.45px` | `18px / 26px / -0.45px` | `20px / 28px / -0.5px`  | `20px / 28px / -0.5px`  |
+| `.type-heading-7` | 600    | `16px / 22px / -0.4px`  | `16px / 24px / -0.4px`  | `18px / 26px / -0.45px` | `18px / 26px / -0.45px` |
 
 ## Reading chart
 
@@ -88,9 +93,18 @@ Interface roles intentionally remain stable across all four breakpoints.
 | ------------------ | --------- | ------ | ------ | ----------- | -------------- | --------- |
 | `.type-eyebrow`    | Bricolage | 500    | `12px` | `16px`      | `3.36px`       | Uppercase |
 | `.type-label`      | Bricolage | 600    | `12px` | `16px`      | `1.2px`        | Uppercase |
-| `.type-button`     | Bricolage | 600    | `14px` | `20px`      | `0.35px`       | Natural   |
-| `.type-navigation` | Bricolage | 600    | `14px` | `20px`      | `0.35px`       | Natural   |
+| `.type-button`     | Hanken    | 500    | `16px` | `24px`      | `-0.4px`       | Natural   |
+| `.type-navigation` | Hanken    | 500    | `16px` | `24px`      | `-0.4px`       | Natural   |
 | `.type-micro`      | Bricolage | 500    | `10px` | `14px`      | `2.4px`        | Uppercase |
+
+The header CTA and menu options both use `16px / 24px / -0.4px` Hanken
+Grotesk Medium typography through their independent Button and Navigation
+roles.
+
+Compact supporting controls opt into `Button size="compact"`. They retain
+the `.type-button` family, medium weight (`500`), and natural case, but resolve
+the compact tokens: `14px` size, `20px` line height, and `-0.35px` letter spacing
+at every breakpoint. These tokens do not change normal buttons or navigation.
 
 ## Rules
 
@@ -102,6 +116,6 @@ Interface roles intentionally remain stable across all four breakpoints.
   defined role fits.
 - Display roles are for short phrases. Use heading roles for ordinary content
   hierarchy.
-- Hanken Grotesk is the default reading font. Bricolage Grotesque is the brand
-  and interface voice.
+- Hanken Grotesk is the reading and interactive-control font. Bricolage
+  Grotesque is the display and brand voice.
 - Do not introduce another font without changing this guide first.

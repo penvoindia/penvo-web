@@ -22,6 +22,7 @@ const typographyRoles = [
   'heading-4',
   'heading-5',
   'heading-6',
+  'heading-7',
   'lead',
   'body-large',
   'body',
@@ -35,14 +36,15 @@ const typographyRoles = [
 ] as const;
 
 describe('Penvo typography', () => {
-  it('loads both approved Google variable fonts', () => {
-    expect(layoutSource).toContain(
-      "import { Bricolage_Grotesque, Hanken_Grotesk } from 'next/font/google'",
-    );
+  it('loads the approved and available Google variable fonts', () => {
+    expect(layoutSource).toContain("from 'next/font/google'");
     expect(layoutSource).toContain('Bricolage_Grotesque({');
     expect(layoutSource).toContain('Hanken_Grotesk({');
-    expect(layoutSource.match(/weight: 'variable'/g)).toHaveLength(2);
-    expect(layoutSource.match(/display: 'swap'/g)).toHaveLength(2);
+    expect(layoutSource).toContain('Pixelify_Sans({');
+    expect(layoutSource).toContain("variable: '--font-pixelify-sans'");
+    expect(layoutSource.match(/weight: 'variable'/g)).toHaveLength(3);
+    expect(layoutSource.match(/display: 'swap'/g)).toHaveLength(3);
+    expect(layoutSource).toContain('preload: false');
   });
 
   it('maps primary and secondary roles to the approved families', () => {
@@ -52,6 +54,26 @@ describe('Penvo typography', () => {
     expect(typographyCss).toContain(
       '--font-secondary: var(--font-hanken-grotesk)',
     );
+  });
+
+  it('uses Hanken Grotesk at 500 for buttons and navigation options', () => {
+    for (const role of ['button', 'navigation']) {
+      const block = typographyCss.match(
+        new RegExp(`\\.type-${role} \\{([^}]+)\\}`),
+      )?.[1];
+
+      expect(block).toContain('font-family: var(--font-secondary)');
+      expect(block).toContain('font-weight: var(--font-weight-medium)');
+    }
+  });
+
+  it('shares the approved interface metrics across buttons and navigation', () => {
+    expect(typographyCss).toContain('--type-button-size: 16px');
+    expect(typographyCss).toContain('--type-button-line-height: 24px');
+    expect(typographyCss).toContain('--type-button-letter-spacing: -0.4px');
+    expect(typographyCss).toContain('--type-navigation-size: 16px');
+    expect(typographyCss).toContain('--type-navigation-line-height: 24px');
+    expect(typographyCss).toContain('--type-navigation-letter-spacing: -0.4px');
   });
 
   it('keeps the type system free of rem and em measurements', () => {
@@ -85,6 +107,13 @@ describe('Penvo typography', () => {
     expect(typographyCss).toContain('--type-lead-size: 20px');
     expect(typographyCss).toContain('--type-lead-size: 22px');
     expect(typographyCss).toContain('--type-lead-size: 24px');
+  });
+
+  it('defines Heading 7 as the responsive 18px compact title role', () => {
+    expect(typographyCss).toContain('--type-heading-7-size: 16px');
+    expect(typographyCss.match(/--type-heading-7-size: 18px/g)).toHaveLength(2);
+    expect(typographyCss).toContain('--type-heading-7-line-height: 26px');
+    expect(typographyCss).toContain('--type-heading-7-letter-spacing: -0.45px');
   });
 
   it.each(typographyRoles)(
