@@ -7,8 +7,11 @@ const eslintConfig = defineConfig([
   ...nextTs,
   globalIgnores([
     '.next/**',
+    '.next-vercel/**',
     '.vinext/**',
     '.wrangler/**',
+    '.output/**',
+    '.vercel/**',
     'coverage/**',
     'dist/**',
     'out/**',

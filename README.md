@@ -25,6 +25,16 @@ npm run build
 npm run ci
 ```
 
+## Vercel deployment
+
+Import this repository with the Next.js framework preset and Node.js 24.x.
+The committed `vercel.json` runs `npm run build:vercel` and uses `.next-vercel` as
+the output directory. The regular `build` command remains the Vinext/Cloudflare
+build for Sites. Clear any dashboard overrides that select a different build
+command or output directory.
+
+Set `NEXT_PUBLIC_SITE_URL` to the public HTTPS origin of the deployed site.
+
 ## Foundation
 
 - Next.js App Router through Vinext

@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 import { securityHeaders } from './src/config/security';
 
 const nextConfig: NextConfig = {
+  distDir: '.next-vercel',
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,

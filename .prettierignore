@@ -1,6 +1,9 @@
 .next
+.next-vercel
 .vinext
 .wrangler
+.output
+.vercel
 coverage
 dist
 node_modules
