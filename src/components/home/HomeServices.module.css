@@ -1,0 +1,197 @@
+.section {
+  padding-block: var(--layout-section-space) 0;
+  background: var(--color-background);
+  scroll-margin-top: var(--layout-header-height);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :global(#lets-build[data-motion='true']) + .section {
+    --services-handoff-overlap: calc(
+      var(--layout-section-space) + clamp(48px, 8vh, 72px)
+    );
+    position: relative;
+    z-index: 1;
+    margin-top: calc(0px - var(--services-handoff-overlap));
+  }
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding-bottom: 40px;
+}
+.headingCopy {
+  min-width: 0;
+}
+.allServices {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.eyebrow {
+  color: var(--color-bright-orange);
+  margin-bottom: 20px;
+}
+.experience {
+  position: relative;
+}
+.list {
+  scroll-margin-top: calc(var(--layout-header-height) + 24px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-border-subtle);
+}
+.row {
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition:
+    background-color var(--motion-duration-base),
+    color var(--motion-duration-base);
+}
+.summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: baseline;
+  gap: 20px;
+  padding: 28px var(--layout-gutter);
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+.summary:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -4px;
+}
+.title {
+  font-size: clamp(28px, 4.2vw, 60px);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.serviceLead {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  min-width: 0;
+}
+.number {
+  flex: 0 0 auto;
+  color: var(--color-full-white);
+  transition: color var(--motion-duration-base);
+}
+.short {
+  display: none;
+  color: var(--color-full-white);
+}
+.row:focus-within {
+  background: var(--color-concrete);
+  color: var(--color-pure-black);
+}
+.row:focus-within .short {
+  color: var(--color-pure-black);
+}
+.row:focus-within .number,
+.summary:active .number {
+  color: var(--color-pure-black);
+}
+.summary:active .short {
+  color: var(--color-pure-black);
+}
+.previewPosition {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.preview {
+  position: relative;
+  width: 300px;
+  height: 220px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--color-pure-black);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.85);
+  transition:
+    opacity 350ms var(--motion-ease-enter),
+    transform 350ms var(--motion-ease-enter);
+}
+.previewVideo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.previewCopy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  color: var(--color-full-white);
+  background: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 45%),
+    transparent 45%,
+    rgb(0 0 0 / 65%)
+  );
+}
+.previewTitle {
+  max-width: 230px;
+  font-size: 24px;
+  font-weight: var(--font-weight-extrabold);
+  line-height: 24px;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 45%);
+}
+.previewPosition[data-visible='true'] .preview {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+@media (min-width: 768px) {
+  .heading {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .summary {
+    gap: 40px;
+    padding-block: 36px;
+  }
+  .serviceLead {
+    gap: 40px;
+  }
+}
+@media (min-width: 1280px) {
+  .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 0;
+  }
+  .title {
+    padding-right: 32px;
+  }
+  .short {
+    display: block;
+    align-self: center;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .row:hover {
+    background: var(--color-concrete);
+    color: var(--color-pure-black);
+  }
+  .row:hover .short {
+    color: var(--color-pure-black);
+  }
+  .row:hover .number {
+    color: var(--color-pure-black);
+  }
+}
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .previewPosition {
+    display: block;
+    transition: transform 180ms var(--motion-ease-enter);
+  }
+}
