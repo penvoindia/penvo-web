@@ -1,12 +1,12 @@
 # Project gallery assets
 
-The gallery uses six existing local WebP files and eight original SVG concept
+The gallery uses six existing local WebP files and six original SVG concept
 covers from `public/projects`. Existing raster images were visually inspected
 and their dimensions measured with the repository's installed `sharp` package.
-No image generation service was used for the eight new vector illustrations.
+No image generation service was used for the vector illustrations.
 
 Titles, categories, and the year `2026` are working gallery metadata. Penvo's
-own branded mockups are identified as Penvo; the remaining twelve examples are
+own branded mockups are identified as Penvo; the remaining ten examples are
 explicitly identified as concepts. These entries do not claim external client
 commissions, completed case studies, measured results, or a released Penvo app.
 
@@ -53,25 +53,25 @@ labels until approved project identities and case-study copy are available.
 
 ## Original vector concepts
 
-Eight standalone SVG illustrations were created in this repository using its
+Six standalone SVG illustrations were created in this repository using its
 Penvo monogram paths and orange, black, white, and neutral palette. They are
 graphic concept applications, with no external assets, scripts, or dependencies.
-All have a 1200 × 900 viewBox and support square or landscape cropping.
+All have a 1200 × 900 viewBox. The retail and wayfinding concepts were
+retired when the gallery moved to twelve covers.
 
-| File                     | Example                              |
-| ------------------------ | ------------------------------------ |
-| `editorial-concept.svg`  | Journal cover and editorial identity |
-| `social-concept.svg`     | Social campaign poster graphics      |
-| `retail-concept.svg`     | Storefront and window signage        |
-| `merch-concept.svg`      | Branded tote bag illustration        |
-| `dashboard-concept.svg`  | Analytics dashboard interface        |
-| `event-concept.svg`      | Event ticket and identity            |
-| `coffee-concept.svg`     | Coffee packaging and label graphics  |
-| `wayfinding-concept.svg` | Architectural directional signage    |
+| File                    | Example                              |
+| ----------------------- | ------------------------------------ |
+| `editorial-concept.svg` | Journal cover and editorial identity |
+| `social-concept.svg`    | Social campaign poster graphics      |
+| `merch-concept.svg`     | Branded tote bag illustration        |
+| `dashboard-concept.svg` | Analytics dashboard interface        |
+| `event-concept.svg`     | Event ticket and identity            |
+| `coffee-concept.svg`    | Coffee packaging and label graphics  |
 
 ## Rendering
 
 `projects-content.ts` records the served width and height, descriptive image
-alternative text, and card shape for each entry. The gallery uses local
-`next/image` sources with responsive sizing and intrinsic image frames. No
-remote image host or case-study destination is required for these previews.
+alternative text, and an optional focal point for each entry. The gallery's
+reference frames, not the image dimensions, decide each crop. Images use local
+`next/image` sources with responsive sizing. No remote image host or
+case-study destination is required for these previews.

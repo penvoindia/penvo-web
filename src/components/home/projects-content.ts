@@ -1,5 +1,3 @@
-export type ProjectCoverShape = 'portrait' | 'square' | 'landscape';
-
 export interface Project {
   readonly id: string;
   readonly title: string;
@@ -10,9 +8,13 @@ export interface Project {
   readonly alt: string;
   readonly width: number;
   readonly height: number;
-  readonly shape?: ProjectCoverShape;
+  /** Optional CSS object-position focal point for the cover crop. */
+  readonly objectPosition?: string;
   readonly featured: boolean;
 }
+
+/** The gallery shows one and a half reference panels: eight covers plus four. */
+export const projectsLimit = 12;
 
 // A data-source boundary: future project records can use the same featured selection.
 export function getFeaturedProjects(
@@ -22,6 +24,7 @@ export function getFeaturedProjects(
 }
 
 // Working preview records. Years are sample values; concept entries are not client work.
+// Their order suits the reference frames (see docs/home-projects.md).
 export const homeProjects = [
   {
     id: 'penvo-identity',
@@ -33,7 +36,6 @@ export const homeProjects = [
     alt: 'Close-up of an orange hoodie with the white Penvo logo.',
     width: 1484,
     height: 1060,
-    shape: 'square',
     featured: true,
   },
   {
@@ -46,33 +48,7 @@ export const homeProjects = [
     alt: 'Close-up of a smartphone home screen with an orange Penvo app icon.',
     width: 1000,
     height: 1344,
-    shape: 'portrait',
-    featured: true,
-  },
-  {
-    id: 'wellness-digital',
-    title: 'Room to breathe',
-    category: 'Web design concept',
-    year: '2026',
-    brand: 'Wellness concept',
-    image: '/projects/wellness-digital.webp',
-    alt: 'Desktop monitor showing a botanical website concept in a sunlit workspace.',
-    width: 1536,
-    height: 1024,
-    shape: 'landscape',
-    featured: true,
-  },
-  {
-    id: 'paper-and-print',
-    title: 'Identity, on paper',
-    category: 'Brand & print concept',
-    year: '2026',
-    brand: 'Stationery concept',
-    image: '/projects/paper-and-print.webp',
-    alt: 'Textured stationery and business cards with black and orange geometric graphics.',
-    width: 1536,
-    height: 1024,
-    shape: 'square',
+    objectPosition: '50% 45%',
     featured: true,
   },
   {
@@ -85,20 +61,30 @@ export const homeProjects = [
     alt: 'Amber bottle and cream cartons with orange and black circular graphics.',
     width: 1536,
     height: 1024,
-    shape: 'portrait',
     featured: true,
   },
   {
-    id: 'campaign-concept',
-    title: 'Made for the outdoors',
-    category: 'Campaign art direction concept',
+    id: 'wellness-digital',
+    title: 'Room to breathe',
+    category: 'Web design concept',
     year: '2026',
-    brand: 'Outdoor concept',
-    image: '/projects/campaign-concept.webp',
-    alt: 'Person in an orange rain jacket hiking through a green forest beside a waterfall.',
+    brand: 'Wellness concept',
+    image: '/projects/wellness-digital.webp',
+    alt: 'Desktop monitor showing a botanical website concept in a sunlit workspace.',
     width: 1536,
     height: 1024,
-    shape: 'portrait',
+    featured: true,
+  },
+  {
+    id: 'paper-and-print',
+    title: 'Identity, on paper',
+    category: 'Brand & print concept',
+    year: '2026',
+    brand: 'Stationery concept',
+    image: '/projects/paper-and-print.webp',
+    alt: 'Textured stationery and business cards with black and orange geometric graphics.',
+    width: 1536,
+    height: 1024,
     featured: true,
   },
   {
@@ -111,46 +97,19 @@ export const homeProjects = [
     alt: 'Graphic journal cover with bold typography and the Penvo monogram.',
     width: 1200,
     height: 900,
-    shape: 'square',
+    objectPosition: '40% 50%',
     featured: true,
   },
   {
-    id: 'social-concept',
-    title: 'Built to stand out',
-    category: 'Social campaign concept',
+    id: 'campaign-concept',
+    title: 'Made for the outdoors',
+    category: 'Campaign art direction concept',
     year: '2026',
-    brand: 'Campaign concept',
-    image: '/projects/social-concept.svg',
-    alt: 'Orange and black social campaign artwork with bold graphic typography.',
-    width: 1200,
-    height: 900,
-    shape: 'landscape',
-    featured: true,
-  },
-  {
-    id: 'retail-concept',
-    title: 'A place with presence',
-    category: 'Retail identity concept',
-    year: '2026',
-    brand: 'Retail concept',
-    image: '/projects/retail-concept.svg',
-    alt: 'Illustrated storefront with orange signage and a branded window.',
-    width: 1200,
-    height: 900,
-    shape: 'landscape',
-    featured: true,
-  },
-  {
-    id: 'merch-concept',
-    title: 'Carry the identity',
-    category: 'Merchandise design concept',
-    year: '2026',
-    brand: 'Merch concept',
-    image: '/projects/merch-concept.svg',
-    alt: 'Illustrated tote bag carrying the Penvo monogram and graphic identity.',
-    width: 1200,
-    height: 900,
-    shape: 'square',
+    brand: 'Outdoor concept',
+    image: '/projects/campaign-concept.webp',
+    alt: 'Person in an orange rain jacket hiking through a green forest beside a waterfall.',
+    width: 1536,
+    height: 1024,
     featured: true,
   },
   {
@@ -163,7 +122,6 @@ export const homeProjects = [
     alt: 'Analytics dashboard concept with charts, metric cards, and orange accents.',
     width: 1200,
     height: 900,
-    shape: 'landscape',
     featured: true,
   },
   {
@@ -176,7 +134,6 @@ export const homeProjects = [
     alt: 'Black and orange event ticket and identity artwork with the Penvo mark.',
     width: 1200,
     height: 900,
-    shape: 'square',
     featured: true,
   },
   {
@@ -189,20 +146,30 @@ export const homeProjects = [
     alt: 'Illustrated coffee packaging with orange labels and geometric graphics.',
     width: 1200,
     height: 900,
-    shape: 'landscape',
     featured: true,
   },
   {
-    id: 'wayfinding-concept',
-    title: 'Find your next move',
-    category: 'Wayfinding design concept',
+    id: 'merch-concept',
+    title: 'Carry the identity',
+    category: 'Merchandise design concept',
     year: '2026',
-    brand: 'Signage concept',
-    image: '/projects/wayfinding-concept.svg',
-    alt: 'Architectural signage concept with directional arrows and orange panels.',
+    brand: 'Merch concept',
+    image: '/projects/merch-concept.svg',
+    alt: 'Illustrated tote bag carrying the Penvo monogram and graphic identity.',
     width: 1200,
     height: 900,
-    shape: 'square',
+    featured: true,
+  },
+  {
+    id: 'social-concept',
+    title: 'Built to stand out',
+    category: 'Social campaign concept',
+    year: '2026',
+    brand: 'Campaign concept',
+    image: '/projects/social-concept.svg',
+    alt: 'Orange and black social campaign artwork with bold graphic typography.',
+    width: 1200,
+    height: 900,
     featured: true,
   },
 ] as const satisfies readonly Project[];

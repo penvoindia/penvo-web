@@ -6,15 +6,23 @@
   margin-inline: auto;
 }
 
+/* The gallery region's focus ring, drawn over the covers that would hide it. */
+.host:has(> [role='region']:focus-visible)::after {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: calc(var(--layout-gutter) - var(--projects-gap));
+  z-index: 2;
+  box-shadow: inset 0 0 0 2px var(--color-focus-ring);
+  content: '';
+  pointer-events: none;
+}
+
 .cursor {
   display: none;
 }
 
+/* The reference mouse helper: a 66px disc with chevrons, 56px while pressed. */
 @media (min-width: 1280px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .host {
-    overflow: clip;
-  }
-
   .host[data-cursor-visible='true'],
   .host[data-cursor-visible='true'] > div,
   .host[data-cursor-visible='true'] > div * {
@@ -29,82 +37,73 @@
     display: block;
     width: 66px;
     height: 66px;
-    margin-top: -33px;
-    margin-left: -33px;
+    margin: -33px 0 0 -33px;
     visibility: hidden;
     pointer-events: none;
     opacity: 0;
-    transition: opacity var(--motion-duration-fast) var(--motion-ease-standard);
+    transition:
+      opacity 300ms ease,
+      visibility 0s linear 300ms;
   }
 
   .host[data-cursor-visible='true'] .cursor {
     visibility: visible;
     opacity: 1;
+    transition: opacity 300ms ease;
   }
 
+  /* The disc opens from the reference's 14px dot, clipping its chevrons. */
   .visual {
     position: relative;
     display: block;
     width: 100%;
     height: 100%;
-    color: var(--color-full-white);
-  }
-
-  .visual::before {
-    position: absolute;
-    inset: 0;
     background: var(--color-bright-orange);
-    border-radius: 50%;
-    content: '';
-    transform: scale(0.72);
-    transition: transform var(--motion-duration-base) var(--motion-ease-enter);
+    clip-path: circle(7px);
+    color: var(--color-full-white);
+    transition: clip-path 300ms ease;
   }
 
-  .host[data-cursor-visible='true'] .visual::before {
-    transform: scale(1);
+  .host[data-cursor-visible='true'] .visual {
+    clip-path: circle(33px);
   }
 
-  .host[data-cursor-visible='true'][data-cursor-pressed='true']
-    .visual::before {
-    transform: scale(calc(56 / 66));
+  .host[data-cursor-visible='true'][data-cursor-pressed='true'] .visual {
+    clip-path: circle(28px);
   }
 
+  /* 6×10 chevrons whose inner edges sit 10px from the centre (5px pressed). */
   .visual svg {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -5px;
-    margin-left: -5px;
+    margin: -4.5px 0 0 -3px;
+    fill: none;
     stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.8;
-    transition: transform var(--motion-duration-base)
-      var(--motion-ease-standard);
+    stroke-linecap: butt;
+    stroke-linejoin: miter;
+    stroke-width: 1.55;
+    transition: transform 300ms ease;
   }
 
   .left {
-    transform: translateX(-10px);
+    transform: translateX(-12.9px);
   }
 
   .right {
-    transform: translateX(10px);
+    transform: translateX(12.9px);
   }
 
   .host[data-cursor-pressed='true'] .left {
-    transform: translateX(-5px);
+    transform: translateX(-7.9px);
   }
 
   .host[data-cursor-pressed='true'] .right {
-    transform: translateX(5px);
+    transform: translateX(7.9px);
   }
 }
 
 @media (any-pointer: coarse) {
-  .host {
-    overflow: visible;
-  }
-
   .host[data-cursor-visible='true'],
   .host[data-cursor-visible='true'] > div,
   .host[data-cursor-visible='true'] > div * {

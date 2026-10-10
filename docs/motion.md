@@ -86,23 +86,27 @@ reference mapping, and content placeholders.
 
 ## Project gallery
 
-The desktop project carousel uses the reference's width-derived height and
-paired columns of mixed portrait, square, and landscape covers. The number of
-columns follows the featured project data. Mouse dragging suppresses
-selection from pointerdown, including background selection outside the viewport,
-and captures horizontal gestures after 6px; a finite
-release glide uses half-sample velocity and a maximum 1000ms cubic ease-out.
-New input, hidden tabs, profile changes, resizing, and cleanup stop the glide.
-It preserves native page scrolling and has no autoplay, looping, or snapping.
+The project gallery reproduces the reference's free-mode slider with native
+scrolling. Mouse dragging follows the pointer from the first pixel, leaves
+gestures steeper than 45° to the page, and suppresses selection from
+pointerdown, including background selection outside the viewport. Past either
+end, travel follows the reference's `pull^0.85 - 1` resistance and returns over
+600ms. Release momentum uses half-sample velocity over 1000ms with CSS
+`ease-out`; a release that would pass an end overshoots by up to 20 times its
+velocity and returns over 600ms. These measured durations are local to the
+gallery rather than shared motion tokens. A press freezes a glide in place,
+while a press past an edge keeps returning to it until dragging takes over;
+native wheel, touch, and keyboard input, hidden tabs, profile changes,
+resizing, and cleanup stop it. There is no autoplay, looping, or snapping.
 Drag input and the custom cursor are enabled only when the rendered cards
-overflow by more than one pixel. Resize, content, image, and font observation
-keep this state current; a fitting list retains the native cursor. Mouse
-presses do not assign keyboard focus, and keyboard focus remains available.
-Desktop fine pointers use a section-scoped 66px brand orange cursor with white
-arrows, shrinking to 56px when pressed. A bounded transform loop follows the mouse with
-the reference's one-eighth interpolation, suspending when settled or inactive.
-Project cards reveal a white cover inset 10px on hover or keyboard focus, using
-shared opacity and transform transitions for the centred metadata. Mobile,
-touch, mixed-pointer, and reduced-motion profiles show a static grid and captions.
-Card markup stays server-rendered. See `docs/home-projects.md` for the reference
-mapping, input behaviour, responsive profiles, and preview content.
+overflow by more than one pixel; late images and fonts do not interrupt motion
+unless the scroll extent changes. Mouse presses do not assign keyboard focus.
+Desktop fine pointers use a section-scoped brand orange cursor that opens from
+a 14px dot to 66px and shrinks to 56px when pressed, all over 300ms, following
+the mouse with the reference's one-eighth interpolation. Project cards fade a
+10px inset Concrete cover in over 300ms on hover or keyboard focus, zoom the
+image over 500ms, and raise each text line from a clipped baseline over 500ms
+(400ms on leaving). Reduced motion keeps dragging direct and removes momentum,
+the cursor, and animated reveals. Card markup stays server-rendered. See
+`docs/home-projects.md` for the reference mapping, formulas, and preview
+content.

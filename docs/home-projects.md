@@ -6,129 +6,150 @@ controllers. Images, fonts, colours, and page gutters belong to Penvo.
 
 ## Reference mapping
 
-The live [Frame photographer portfolio](https://frame.ancorathemes.com/photographer-portfolio/)
-uses finite horizontal dragging across staggered portfolio panels. Its runtime
-disables looping when overflow is enabled; autoplay and mouse-wheel control
-are also disabled. Its desktop panel uses four columns, twelve equal rows,
-30px gaps, and paired spans of 5/7, 7/5, 6/6, and 8/4.
+The section reproduces the gallery at the top of the live
+[Frame photographer portfolio](https://frame.ancorathemes.com/photographer-portfolio/),
+measured in Chrome on 10 October 2026. The reference is a Swiper 8.4.5 slider
+of full-width panels. Each panel holds eight covers in a ThemeREX
+`sc_portfolio_fill` grid, and the columns of neighbouring panels form one
+continuous strip with 30px gaps. It shows 24 covers; Penvo shows twelve: one
+full panel and the first half of the next.
 
-The visible reference height is width-derived:
-`((viewport inline width - 150px) / 4) * 1.6875 + 60px`.
-The 150px accounts for its two 30px outer gutters and three 30px column gaps.
-Reference-only browser measurements found heights of 597.89px at a 1440px
-viewport, 530.39px at 1280px, and 800.39px at 1920px (with the browser's
-15px vertical scrollbar). Penvo preserves this exact desktop height formula;
-the reference's empty clearfix row is omitted.
+Penvo keeps the reference geometry inside its own layout frame. The reference's
+30px outer margins become Penvo's page gutters, so the strip aligns with the
+section heading and stops at the 1700px layout maximum. `content` below is the
+width inside those gutters. As in the reference, the strip is clipped one gap
+outside the frame, so the next column waits just out of view.
 
-Penvo places the featured records in a single horizontal strip, with the current
-fourteen examples forming seven two-card columns at that height. The carousel keeps Penvo's page
-gutters, with 30px between cards on desktop, 24px on tablet landscape, 20px on
-tablet portrait, and 16px on mobile.
-Portrait-led pairs span eight and four rows; square-led pairs span seven and
-five; pairs of landscape covers each span six. A final unpaired project fills
-its column without inserting a placeholder. Column width equals a seven-row
-card's height, preserving true 1:1 frames for seven-row covers. Tall and wide
-rectangles share this width and move together through one native scrolling
-track, with no independent card drift. The carousel stays within the page frame, with no
-page-wide overflow. A 70px gap separates the section heading from the cards.
+### Desktop, 1280px and above
 
-The reference's hover cover is white and inset 10px from the image edges,
-with centred title and category. Penvo preserves that cover and adds the
-requested year and brand above the title. The small year/brand separator is a
-square. Titles use Bricolage heading-5; metadata uses Hanken body and categories
-use body-small. Images keep square corners and do not zoom on hover.
+Four columns fill the frame: `column = (content - 90px) / 4`, with 30px gaps.
+Twelve equal rows are sized so a four-row cover is exactly 16:9:
+`row = (column × 0.5625 - 90px) / 4`, which makes the strip
+`column × 1.6875 + 60px` tall. Each panel pairs covers in its four columns as
+5/7, 7/5, 6/6, and 8/4 rows. Covers nine to twelve continue the strip with the
+5/7 and 7/5 columns. An unpaired final cover fills its whole column, as in the
+reference's odd-count templates.
 
-## Motion and input brief
+### Tablet, 768–1279px
 
-On a fine hover pointer at 1024px and above, the cover fades over the shared
-base duration (320ms). Year/brand, title, and category move from `translateY(100%)`
-to their centred resting positions over that same duration while fading over
-180ms. Keyboard focus reveals the same information with Penvo's focus outline.
-Only transform and opacity animate; no permanent `will-change` layer is added.
+The reference switches to a three-column panel:
+`third = (content - 60px) / 3`. Rows one to five are a fixed 75px. The seventh
+cover spans two columns, and it and the eighth cover are 16:9; that sets row six
+to `third × 0.5625 - 13.125px` and rows seven and eight to
+`(third × 0.5625 - 30px) / 2`. Covers nine to twelve form a second panel of
+two half-width columns, `(content - 30px) / 2`, staggered like the reference's
+four-cover template but over all eight rows (five and three rows, then four and
+four), so it is as tall as the first panel. Any other partial panel also fills
+its full height: one to three covers use half-width columns, and five to seven
+extend the lowest cover in each column to the bottom row.
 
-Eligible primary mouse presses prevent selection immediately without assigning
-keyboard focus to the clicked card. Horizontal movement of at least 6px
-captures the pointer and updates native `scrollLeft` directly. Text selection,
-native image dragging, and the click following a recognized drag are suppressed.
-During the gesture, document capture listeners prevent selection and image
-dragging even outside the viewport. Existing selections that intersect the
-gallery are cleared; selections elsewhere remain untouched. These listeners
-are removed on release, cancellation, interruption, and cleanup. Ordinary
-clicks and keyboard focus remain usable. Covers and focus outlines hide during
-dragging; keyboard navigation retains its normal focus treatment.
+### Mobile, below 768px
 
-Both drag input and the custom cursor require actual horizontal overflow of
-more than one pixel, allowing for browser rounding. When every featured card
-fits, the native cursor remains normal and mouse gestures are left alone.
-Viewport and grid resize observation, project markup changes, late image loads,
-font changes, and profile changes recheck this condition. Reducing the featured
-list restores the native cursor and cancels any gesture or queued motion.
+Each panel stacks up to eight 16:9 covers at the full frame width, 20px
+apart, and the next panel sits 20px to the right, out of view until swiped.
+The reference's panels are always full, so Penvo balances its panels: twelve
+covers become two stacks of six, and no swipe lands on an empty half.
 
-Release glide follows the reference's half-sample velocity and 0.02px/ms minimum,
-with a bounded 1000ms cubic ease-out and a clamped endpoint. Stale samples do
-not start a glide; boundary clamping shortens its duration. This local 1000ms
-maximum matches the measured free-mode release behavior rather than a shared
-UI transition duration. New presses, wheel/touch input, keyboard input, hidden
-tabs, resizing, profile changes, and cleanup cancel the glide. There is no
-autoplay, looping, snapping, edge bounce, wheel interception, or animation library.
-Vertical wheels and page scrolling remain native; trackpads and keyboard can
-scroll the carousel's native overflow without JavaScript.
+### Spacing
 
-At desktop widths from 1280px, an overflowing gallery uses a centred brand orange
-66px cursor with two white 10px chevrons. Pressing shrinks the circle to 56px and
-brings the arrows closer together, using Penvo's shared transitions. Its
-transform follows the mouse with the reference's one-eighth interpolation; the
-animation frame loop stops when the cursor settles or is hidden. The helper
-covers the image grid and its gaps, replacing the native cursor only while
-active. It is decorative, ignores pointer events, and clears on pointer exit,
-cancellation, window blur, hidden tabs, profile changes, and cleanup.
+The heading's distance to the gallery follows the reference's spacer: 60px from
+1440px, 50px from 1024px, 45px from 768px, 35px from 480px, and 30px below.
 
-Mobile uses one column, and tablet portrait uses two. Touch, mixed-pointer,
-no-hover, and reduced-motion profiles use a static grid with metadata below
-each image. Static images use 4:3, 1:1, or 3:4 frames according to each record's shape;
-all project details remain visible.
-The mobile and tablet layout preserves native vertical page scrolling. Reduced
-motion introduces no hover reveal, image scaling, or animated gallery movement.
-Fine-pointer tablet landscape retains the horizontal carousel with a minimum
-500px height so hover text fits, and uses native grab/grabbing feedback.
-The original reference instead uses a taller three-column panel at those widths;
-Penvo adapts this profile to its readable column pairs. The no-JavaScript desktop
-carousel supports native scrolling and keyboard-focus covers.
+## Hover and focus
+
+On hover, the reference fades a 10px inset panel over the cover in 300ms,
+scales the photo from 1.005 to 1.07 over 500ms, and raises each text line from
+its own clipped baseline over 500ms (400ms on leaving), all with CSS `ease`.
+Penvo keeps these timings and geometry. The panel uses Concrete for the
+reference's warm off-white. The text block is inset 20px. Penvo adds the
+working year and brand above the title, separated by a small square. Titles use
+`type-heading-5` in the inverse text colour; the year and brand use
+`type-body-small`; categories use `type-body` in Super Grey, the closest token to
+the reference's light grey. Super Grey on Concrete is a low-contrast pairing, so
+reconsider it if categories become essential content. The year and brand stay on
+one line, ending a long brand with an ellipsis. Each cover is a size container:
+below 150px tall it drops the year and brand, and below 135px the category, with
+titles clamped to two lines, so no line is ever cut through. Keyboard focus
+reveals the same panel and draws Penvo's focus outline on an overlay above the
+image. A focused cover that is partly outside the strip scrolls fully into view,
+aligned with the frame; pointer presses never move the strip this way. The
+gallery region's own focus ring is drawn above the covers. Touch profiles show
+covers only, like the reference.
+
+## Cursor
+
+At 1280px and above with a fine pointer, an overflowing gallery replaces the
+native cursor with the reference's mouse helper in Penvo orange. It opens from a
+14px dot into a 66px disc in 300ms, follows the pointer by one-eighth of the
+remaining distance per frame, and shrinks to 56px while pressed. Its white
+chevrons are 6 × 10px, drawn with a 1.55px stroke; their inner edges sit 10px
+from the centre, or 5px while pressed. All size and chevron changes take 300ms
+with `ease`. The disc clips its chevrons while it opens. The section clips only
+sideways, so the disc stays round over the strip's top and bottom edges. It is
+decorative, ignores pointer events, and clears on exit, cancellation, blur,
+hidden tabs, profile changes, and cleanup. Below 1280px the native cursor is
+used, as in the reference.
+
+## Drag and momentum
+
+Fine-pointer mouse dragging follows the reference's free mode. The strip moves
+with the pointer from the first pixel. Once the pointer is 5px away, or on a
+level move, a gesture steeper than 45° is left to the page. Text selection,
+native image dragging, and the click after any movement are suppressed.
+
+Past either end, travel follows the reference's resistance:
+`pull^0.85 - 1` pixels. Releasing there returns to the edge over 600ms with CSS
+`ease-out` and no momentum. Elsewhere, the release velocity is half the speed
+of the last two pointer samples; slow (under 0.02px/ms), stale (samples more
+than 150ms apart), and paused (more than 300ms) releases stop in place.
+Momentum travels `velocity × 1000ms` over 1000ms with CSS `ease-out`. When it
+would pass an end, it overshoots at the same speed, then returns over 600ms.
+At the start the overshoot is at most `20 × velocity` pixels; at the far end it
+is always the full `20 × velocity`, matching the reference. A press freezes a
+glide where it is. A press past an edge keeps returning to the edge while held,
+as in the reference, and dragging then continues from wherever it has reached
+without a jump. Secondary and middle buttons leave any motion running.
+
+Overshoot translates the covers rather than the grid, and the grid clips them,
+so the native scroll range never changes. Native wheel, touch, and keyboard
+scrolling remain
+available and take over from any motion. Late image and font loads re-measure
+the strip without interrupting a glide unless its extent changes. With reduced
+motion, dragging stays direct, edges return immediately, and there is no
+momentum, cursor, or hover animation. Touch devices use native horizontal
+scrolling.
 
 ## Content and assets
 
-`projects-content.ts` defines the typed `Project` data boundary and fourteen
+`projects-content.ts` defines the typed `Project` data boundary and twelve
 editable preview records: ID, image, title, category, year, brand, image
-description, dimensions, optional cover shape, and a `featured` flag.
-`HomeProjects` accepts a project collection from its server-side parent and
-uses `getFeaturedProjects` to show only featured entries in editorial order.
-The section is omitted when none are featured. The preview collection remains
-the default until a real content source is connected; there is no CMS or new
-data-fetching dependency.
+description, dimensions, an optional `objectPosition` focal point, and a
+`featured` flag. `HomeProjects` accepts a project collection from its
+server-side parent, shows featured entries in editorial order, and caps them at
+`projectsLimit` (twelve). The section is omitted when none are featured. The
+preview collection remains the default until a real content source is
+connected; there is no CMS or new data-fetching dependency.
 
-`projects-layout.ts` derives the composition from the selected records rather
-than a fixed count. An explicit shape defines the editorial crop; otherwise
-intrinsic image dimensions select portrait, square, or landscape. The same
-layout handles small lists, odd counts, and future additions.
-This composition
-uses Penvo's hoodie and mobile-app mockups, four existing concept visuals,
-and eight original SVG concept covers for editorial, social, retail, merchandise,
-dashboard, event, coffee packaging, and wayfinding design.
-Titles and years are working content; the concepts do not assert external client
-commissions, performance results, or endorsements. Verified local sources and
-unverified concept provenance are documented in `project-assets.md`.
+`projects-layout.ts` derives every placement from the selected records rather
+than a fixed count: desktop column and rows, tablet column, span, and rows, the
+tablet column tracks, and the mobile panel and position. The preview order
+suits the reference frames: Penvo's hoodie leads, its phone mockup takes a tall
+frame, and wide images take the 16:9 frames. Titles and years are working
+content; concepts do not assert client commissions, results, or endorsements.
+Sources are documented in `project-assets.md`.
 
-Every image uses `next/image`, an intrinsic frame, responsive `sizes`, local
-WebP or SVG files, and lazy loading. No remote image host is required.
+Every image uses `next/image` with `fill`, lazy loading, and `sizes` derived from
+its rendered width at each breakpoint. Each `vw` term follows a space, as in
+`calc(-47px + 25vw)`, so `next/image` can offer small srcset widths. No remote
+image host is required.
 
 ## Validation
 
-Focused content and layout tests cover featured filtering, editorial order,
-dimension-derived shapes, odd counts, and complete non-overlapping columns.
-Drag, cursor, and layout-observer tests cover selection prevention, eligible input, focus,
-pointer capture, finite movement, release glide, cancellation, visibility, frame
-scheduling, dynamic overflow changes, data updates, and cleanup. Check server-rendered project order and metadata, verify
-local image files, and run the existing repository checks and build.
-The reference was inspected in an isolated browser session at desktop,
-tablet, and mobile widths. Local browser QA remains reserved for an explicit
-request under the motion skill.
+Layout tests cover the twelve placements at every breakpoint, hole-free
+layouts and balanced phone panels for one to twenty-four projects, the
+stylesheet's measured formulas, and their proportions. Drag tests check the
+measured resistance table, CSS `ease-out` samples, momentum, bounce, held and
+secondary-button presses, reduced motion, interruption, selection handling, and
+cleanup. Focus tests cover keyboard reveal of partly hidden covers. Cursor and
+overflow tests cover eligibility, interpolation, layout changes, and cleanup.
+Content tests check the twelve featured records and their local files.

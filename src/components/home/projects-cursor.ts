@@ -116,7 +116,14 @@ export function createProjectsCursor(
     delete host.dataset.cursorPressed;
   }
 
-  const destroyLayout = observeProjectsLayout(viewport, reset);
+  // Late images and fonts keep the cursor in place; lost overflow clears it.
+  function relayout() {
+    if (destroyed) return;
+    if (position && eligible()) schedule();
+    else hide();
+  }
+
+  const destroyLayout = observeProjectsLayout(viewport, relayout);
 
   viewport.addEventListener('pointerenter', move);
   viewport.addEventListener('pointermove', move, { passive: true });

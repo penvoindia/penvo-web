@@ -301,15 +301,13 @@ describe('project gallery custom cursor', () => {
     'blur',
     'resize',
     'keydown',
-    'element resize',
     'desktop profile',
     'coarse pointer',
     'visibilitychange',
   ])('restores the native cursor on %s', (trigger) => {
     start();
     show();
-    if (trigger === 'element resize') CursorResizeObserver.latest.resize();
-    else if (trigger === 'desktop profile') desktopMouse.change(false);
+    if (trigger === 'desktop profile') desktopMouse.change(false);
     else if (trigger === 'coarse pointer') coarsePointer.change(true);
     else if (trigger === 'visibilitychange')
       document.dispatchEvent(new Event(trigger));
@@ -346,6 +344,16 @@ describe('project gallery custom cursor', () => {
       expect(frames.size).toBe(0);
     },
   );
+
+  it('keeps the cursor in place when late images or fonts re-measure the gallery', () => {
+    start();
+    show();
+    CursorResizeObserver.latest.resize();
+    expect(host.dataset.cursorVisible).toBe('true');
+    flush();
+    expect(host.dataset.cursorVisible).toBe('true');
+    expect(cursor.style.transform).toBe('translate3d(80px, 90px, 0)');
+  });
 
   it('switches between normal and scrolling cursor when content changes', () => {
     start();

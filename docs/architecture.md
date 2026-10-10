@@ -34,10 +34,11 @@ desktop and tablet horizontal scroll progression.
 and a small client wrapper for native horizontal scrolling controls.
 `HomeProjects` follows testimonials with server-rendered project cards and
 CSS hover/focus covers. A small `ProjectsGallery` client wrapper adds native
-mouse dragging, bounded release glide, and an overflow-aware desktop cursor.
-The server component accepts typed project data and filters featured records;
-the current fourteen previews are the default. A count-independent layout
-places mixed portrait, square, and landscape covers in the same carousel.
+mouse dragging with the reference's free-mode momentum and edge resistance,
+and an overflow-aware desktop cursor. The server component accepts typed
+project data, filters featured records, and shows at most twelve; the current
+twelve previews are the default. A count-independent layout places them in the
+reference's desktop, tablet, and mobile panel templates.
 `HomeContact` closes the current homepage with a light contact intro. Its
 server-rendered heading and copy isolate the rotating greeting in a small
 Client Component.

@@ -38,14 +38,9 @@ export function observeProjectsLayout(
     subtree: true,
     characterData: true,
     attributes: true,
-    attributeFilter: [
-      'class',
-      'style',
-      'src',
-      'sizes',
-      'hidden',
-      'data-project-shape',
-    ],
+    // Inline styles are excluded: drag overshoot transforms the grid without
+    // resizing it, and placement changes resize the observed grid.
+    attributeFilter: ['class', 'src', 'sizes', 'hidden'],
   });
   viewport.addEventListener('load', refresh, true);
   document.fonts?.addEventListener('loadingdone', refresh);

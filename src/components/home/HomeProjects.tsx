@@ -4,31 +4,56 @@ import type { CSSProperties } from 'react';
 import {
   getFeaturedProjects,
   homeProjects,
+  projectsLimit,
   type Project,
 } from './projects-content';
-import { layoutProjects } from './projects-layout';
+import {
+  layoutProjects,
+  type TabletPlacement,
+  type TabletTrack,
+} from './projects-layout';
 import { ProjectsGallery } from './ProjectsGallery';
 import styles from './HomeProjects.module.css';
 
-const mosaicInput =
-  '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)';
-const projectImageSizes = [
-  '(min-width: 1700px) and (any-pointer: coarse) 790px',
-  '(min-width: 768px) and (any-pointer: coarse) 45vw',
-  `(min-width: 1280px) and ${mosaicInput} calc(24.61vw - 14px)`,
-  `(min-width: 1024px) and ${mosaicInput} 300px`,
-  '(min-width: 1700px) 790px',
-  '(min-width: 768px) 45vw',
-  '90vw',
-].join(', ');
+const tabletTrackSizes = {
+  third: 'var(--projects-tablet-third)',
+  half: 'var(--projects-tablet-half)',
+} as const;
+
+// Rendered widths follow the gallery formulas in HomeProjects.module.css.
+// Each vw term follows a space so next/image can derive small srcset widths.
+function imageSizes(tablet: TabletPlacement, track: TabletTrack | undefined) {
+  const tabletWidth =
+    track === 'half'
+      ? 'calc(-15px + 45vw)'
+      : tablet.columns > 1
+        ? 'calc(-10px + 60vw)'
+        : 'calc(-20px + 30vw)';
+  return [
+    '(min-width: 1700px) 378px',
+    '(min-width: 1280px) calc(-47px + 25vw)',
+    `(min-width: 768px) ${tabletWidth}`,
+    '90vw',
+  ].join(', ');
+}
 
 export function HomeProjects({
   projects = homeProjects,
 }: {
   projects?: readonly Project[];
 }) {
-  const featuredProjects = getFeaturedProjects(projects);
+  const featuredProjects = getFeaturedProjects(projects).slice(
+    0,
+    projectsLimit,
+  );
   if (!featuredProjects.length) return null;
+
+  const { placements, tabletTracks } = layoutProjects(featuredProjects);
+  const gridStyle = {
+    '--projects-tablet-tracks': tabletTracks
+      .map((track) => tabletTrackSizes[track])
+      .join(' '),
+  } as CSSProperties;
 
   return (
     <section
@@ -45,70 +70,92 @@ export function HomeProjects({
         </div>
       </div>
       <ProjectsGallery>
-        <ul className={styles.grid} data-projects-grid role="list">
-          {layoutProjects(featuredProjects).map(
-            ({ project, shape, column, rowStart, rowSpan }) => {
-              const titleId = `project-${project.id}-title`;
-              const metadataId = `project-${project.id}-metadata`;
-              const categoryId = `project-${project.id}-category`;
-              const placement = {
-                '--project-column': column,
-                '--project-row-start': rowStart,
-                '--project-row-span': rowSpan,
-              } as CSSProperties;
+        <ul
+          className={styles.grid}
+          data-projects-grid
+          role="list"
+          style={gridStyle}
+        >
+          {placements.map(({ project, desktop, tablet, mobile }) => {
+            const titleId = `project-${project.id}-title`;
+            const metadataId = `project-${project.id}-metadata`;
+            const categoryId = `project-${project.id}-category`;
+            const placement = {
+              '--desktop-column': desktop.column,
+              '--desktop-row': desktop.row,
+              '--desktop-rows': desktop.rows,
+              '--tablet-column': tablet.column,
+              '--tablet-columns': tablet.columns,
+              '--tablet-row': tablet.row,
+              '--tablet-rows': tablet.rows,
+              '--mobile-column': mobile.column,
+              '--mobile-row': mobile.row,
+            } as CSSProperties;
 
-              return (
-                <li
-                  className={styles.tile}
-                  data-project-id={project.id}
-                  data-project-shape={shape}
-                  key={project.id}
-                  style={placement}
+            return (
+              <li
+                className={styles.tile}
+                data-project-id={project.id}
+                key={project.id}
+                style={placement}
+              >
+                <figure
+                  aria-describedby={`${metadataId} ${categoryId}`}
+                  aria-labelledby={titleId}
+                  className={styles.card}
+                  tabIndex={0}
                 >
-                  <figure
-                    aria-describedby={`${metadataId} ${categoryId}`}
-                    aria-labelledby={titleId}
-                    className={styles.card}
-                    tabIndex={0}
-                  >
-                    <div className={styles.media}>
-                      <Image
-                        alt={project.alt}
-                        className={styles.image}
-                        draggable={false}
-                        fill
-                        loading="lazy"
-                        sizes={projectImageSizes}
-                        src={project.image}
-                      />
-                    </div>
-                    <figcaption className={styles.caption}>
-                      <p
-                        className={`${styles.metadata} type-body`}
-                        id={metadataId}
-                      >
+                  <div className={styles.media}>
+                    <Image
+                      alt={project.alt}
+                      className={styles.image}
+                      draggable={false}
+                      fill
+                      loading="lazy"
+                      sizes={imageSizes(
+                        tablet,
+                        tabletTracks[tablet.column - 1],
+                      )}
+                      src={project.image}
+                      style={
+                        project.objectPosition
+                          ? { objectPosition: project.objectPosition }
+                          : undefined
+                      }
+                    />
+                  </div>
+                  <figcaption className={styles.caption}>
+                    <p
+                      className={`${styles.line} ${styles.byline} type-body-small`}
+                      id={metadataId}
+                    >
+                      <span className={`${styles.reveal} ${styles.metadata}`}>
                         <time dateTime={project.year}>{project.year}</time>
                         <span aria-hidden="true" className={styles.separator} />
                         <span>{project.brand}</span>
-                      </p>
-                      <h3
-                        className={`${styles.title} type-heading-5`}
-                        id={titleId}
-                      >
+                      </span>
+                    </p>
+                    <h3
+                      className={`${styles.line} ${styles.title} type-heading-5`}
+                      id={titleId}
+                    >
+                      <span className={`${styles.reveal} ${styles.clamp}`}>
                         {project.title}
-                      </h3>
-                      <p
-                        className={`${styles.category} type-body-small`}
-                        id={categoryId}
-                      >
+                      </span>
+                    </h3>
+                    <p
+                      className={`${styles.line} ${styles.category} type-body`}
+                      id={categoryId}
+                    >
+                      <span className={`${styles.reveal} ${styles.clamp}`}>
                         {project.category}
-                      </p>
-                    </figcaption>
-                  </figure>
-                </li>
-              );
-            },
-          )}
+                      </span>
+                    </p>
+                  </figcaption>
+                </figure>
+              </li>
+            );
+          })}
         </ul>
       </ProjectsGallery>
     </section>

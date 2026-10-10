@@ -1,7 +1,12 @@
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
 import { describe, expect, it } from 'vitest';
 
 import {
   getFeaturedProjects,
+  homeProjects,
+  projectsLimit,
   type Project,
 } from '@/src/components/home/projects-content';
 
@@ -44,6 +49,20 @@ describe('featured project selection', () => {
       'first',
       'second',
     ]);
+  });
+
+  it('provides exactly the twelve covers the gallery shows', () => {
+    expect(projectsLimit).toBe(12);
+    expect(getFeaturedProjects(homeProjects)).toHaveLength(projectsLimit);
+  });
+
+  it('uses unique ids and existing local images', () => {
+    const ids = homeProjects.map(({ id }) => id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const { image } of homeProjects) {
+      const file = fileURLToPath(new URL(`../public${image}`, import.meta.url));
+      expect(existsSync(file), image).toBe(true);
+    }
   });
 
   it('leaves the source records and list unchanged', () => {

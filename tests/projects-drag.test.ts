@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createProjectsDrag } from '@/src/components/home/projects-drag';
+import {
+  createProjectsDrag,
+  easeOut,
+  resistOvershoot,
+} from '@/src/components/home/projects-drag';
 
 class DragPreference extends EventTarget {
   matches = true;
@@ -11,26 +15,25 @@ class DragPreference extends EventTarget {
   }
 }
 
+class DragGrid {
+  values = new Map<string, string>();
+  style = {
+    setProperty: vi.fn((name: string, value: string) => {
+      this.values.set(name, value);
+    }),
+    removeProperty: vi.fn((name: string) => {
+      this.values.delete(name);
+    }),
+  };
+}
+
 class DragViewport extends EventTarget {
   dataset: Record<string, string> = {};
   scrollLeft = 100;
   scrollWidth = 1800;
   clientWidth = 1000;
-  closest = vi.fn(() => null);
-  querySelector = vi.fn(() => null);
-  captured = new Set<number>();
-  setPointerCapture = vi.fn((pointerId: number) => {
-    this.captured.add(pointerId);
-  });
-  hasPointerCapture = vi.fn((pointerId: number) =>
-    this.captured.has(pointerId),
-  );
-  releasePointerCapture = vi.fn((pointerId: number) => {
-    this.captured.delete(pointerId);
-    this.dispatchEvent(
-      Object.assign(new Event('lostpointercapture'), { pointerId }),
-    );
-  });
+  grid = new DragGrid();
+  querySelector = vi.fn(() => this.grid);
 }
 
 class DragResizeObserver {
@@ -47,6 +50,44 @@ class DragResizeObserver {
     this.callback([], this as unknown as ResizeObserver);
   }
 }
+
+describe('reference free-mode curves', () => {
+  it.each([
+    [10, 6],
+    [20, 11],
+    [50, 26],
+    [100, 49],
+    [150, 69],
+    [200, 89],
+    [250, 108],
+    [300, 126],
+    [350, 144],
+    [400, 161],
+  ])(
+    'moves %ipx of pull past an edge by the measured %ipx',
+    (distance, travel) => {
+      expect(Math.floor(resistOvershoot(distance))).toBe(travel);
+    },
+  );
+
+  it('has no travel without a pull past the edge', () => {
+    expect(resistOvershoot(0)).toBe(0);
+    expect(resistOvershoot(1)).toBe(0);
+    expect(resistOvershoot(-20)).toBe(0);
+  });
+
+  it.each([
+    [0, 0],
+    [0.1, 0.160572],
+    [0.25, 0.378138],
+    [0.5, 0.684643],
+    [0.75, 0.906535],
+    [0.9, 0.982973],
+    [1, 1],
+  ])('follows CSS ease-out at %f', (progress, value) => {
+    expect(easeOut(progress)).toBeCloseTo(value, 5);
+  });
+});
 
 describe('projects native mouse dragging', () => {
   let viewport: DragViewport;
@@ -95,7 +136,6 @@ describe('projects native mouse dragging', () => {
     );
     vi.stubGlobal('document', document);
     vi.stubGlobal('ResizeObserver', DragResizeObserver);
-    vi.stubGlobal('performance', { now: () => now });
   });
 
   afterEach(() => {
@@ -154,6 +194,14 @@ describe('projects native mouse dragging', () => {
     expect(viewport.scrollLeft).toBe(150);
   }
 
+  // Releases 0.625px/ms to the left: twenty pixels in the last sixteen milliseconds.
+  function flick() {
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 90 });
+    pointer('pointermove', { clientX: 70 });
+    pointer('pointerup');
+  }
+
   function frame(milliseconds: number) {
     now += milliseconds;
     const pending = [...frames.values()];
@@ -161,42 +209,338 @@ describe('projects native mouse dragging', () => {
     pending.forEach((callback) => callback(now));
   }
 
-  it('prevents selection on the first press and captures only after horizontal intent', () => {
+  function overshoot() {
+    return Number.parseFloat(
+      viewport.grid.values.get('--projects-overshoot') ?? '0',
+    );
+  }
+
+  it('follows the pointer from the first pixel after preventing selection', () => {
     start();
     expect(pointer('pointerdown').defaultPrevented).toBe(true);
     expect(native('selectstart').defaultPrevented).toBe(true);
-    pointer('pointermove', { clientX: 95 });
-    expect(viewport.scrollLeft).toBe(100);
-    expect(viewport.dataset.dragging).toBeUndefined();
-    expect(viewport.setPointerCapture).not.toHaveBeenCalled();
-
-    expect(pointer('pointermove', { clientX: 94 }).defaultPrevented).toBe(true);
-    expect(viewport.scrollLeft).toBe(106);
+    expect(pointer('pointermove', { clientX: 99 }).defaultPrevented).toBe(true);
+    expect(viewport.scrollLeft).toBe(101);
     expect(viewport.dataset.dragging).toBe('true');
-    expect(viewport.setPointerCapture).toHaveBeenCalledOnce();
     pointer('pointermove', { clientX: 50 });
     expect(viewport.scrollLeft).toBe(150);
-    pointer('pointerup');
+    pointer('pointerup', { timeStamp: now + 400 });
     expect(viewport.dataset.dragging).toBeUndefined();
-    expect(viewport.releasePointerCapture).toHaveBeenCalledWith(7);
+    expect(frames.size).toBe(0);
     expect(native('selectstart').defaultPrevented).toBe(false);
   });
 
-  it('preserves ordinary clicks without adding mouse focus highlights', () => {
+  it('keeps ordinary clicks and suppresses only the click after any drag', () => {
     start();
-    const figure = { focus: vi.fn() };
-    viewport.closest.mockReturnValue(figure as never);
     const onClick = vi.fn();
     viewport.addEventListener('click', onClick);
-
     pointer('pointerdown');
-    expect(figure.focus).not.toHaveBeenCalled();
-    pointer('pointermove', { clientX: 96, clientY: 122 });
     pointer('pointerup');
     expect(click().defaultPrevented).toBe(false);
     expect(onClick).toHaveBeenCalledOnce();
-    expect(viewport.setPointerCapture).not.toHaveBeenCalled();
-    expect(viewport.scrollLeft).toBe(100);
+
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 99 });
+    pointer('pointerup', { timeStamp: now + 400 });
+    expect(click().defaultPrevented).toBe(true);
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(click().defaultPrevented).toBe(false);
+    expect(onClick).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps keyboard activation available after a drag', () => {
+    start();
+    drag();
+    pointer('pointerup', { timeStamp: now + 400 });
+    expect(click({ detail: 0 }).defaultPrevented).toBe(false);
+  });
+
+  it('leaves gestures steeper than 45 degrees to the page once 5px away', () => {
+    start();
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 98, clientY: 124 });
+    expect(viewport.scrollLeft).toBe(102);
+    expect(
+      pointer('pointermove', { clientX: 97, clientY: 126 }).defaultPrevented,
+    ).toBe(false);
+    pointer('pointermove', { clientX: 50, clientY: 200 });
+    expect(viewport.scrollLeft).toBe(102);
+    expect(viewport.dataset.dragging).toBeUndefined();
+    expect(native('selectstart', document).defaultPrevented).toBe(false);
+    pointer('pointerup');
+    expect(click().defaultPrevented).toBe(false);
+  });
+
+  it('keeps a 45 degree or level gesture horizontal', () => {
+    start();
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 96, clientY: 124 });
+    pointer('pointermove', { clientX: 60, clientY: 200 });
+    expect(viewport.scrollLeft).toBe(140);
+    pointer('pointerup', { timeStamp: now + 400 });
+
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 99 });
+    pointer('pointermove', { clientX: 90, clientY: 200 });
+    expect(viewport.scrollLeft).toBe(150);
+  });
+
+  it('resists past both edges with the reference power curve', () => {
+    viewport.scrollLeft = 0;
+    start();
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 300 });
+    expect(viewport.scrollLeft).toBe(0);
+    expect(overshoot()).toBeCloseTo(200 ** 0.85 - 1);
+    pointer('pointermove', { clientX: 101 });
+    expect(overshoot()).toBe(0);
+    expect(viewport.grid.values.has('--projects-overshoot')).toBe(false);
+    pointer('pointermove', { clientX: -900 });
+    expect(viewport.scrollLeft).toBe(800);
+    expect(overshoot()).toBeCloseTo(-(200 ** 0.85 - 1));
+  });
+
+  it('returns from an edge over 600ms ease-out without momentum', () => {
+    viewport.scrollLeft = 0;
+    start();
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 200 });
+    pointer('pointermove', { clientX: 300 });
+    const pulled = overshoot();
+    pointer('pointerup');
+    frame(16);
+    expect(overshoot()).toBeCloseTo(pulled);
+    frame(300);
+    expect(overshoot()).toBeCloseTo(pulled * (1 - 0.684643), 3);
+    frame(300);
+    expect(overshoot()).toBe(0);
+    expect(viewport.scrollLeft).toBe(0);
+    expect(frames.size).toBe(0);
+  });
+
+  it('glides half the release velocity for 1000ms with ease-out', () => {
+    start();
+    flick();
+    frame(16);
+    expect(viewport.scrollLeft).toBe(130);
+    frame(500);
+    expect(viewport.scrollLeft).toBeCloseTo(130 + 625 * 0.684643, 3);
+    frame(500);
+    expect(viewport.scrollLeft).toBe(755);
+    expect(frames.size).toBe(0);
+  });
+
+  it('bounces twenty times the velocity past an edge, then returns over 600ms', () => {
+    viewport.scrollLeft = 700;
+    start();
+    flick();
+    // 625px of momentum would pass the end; the bounce peaks 12.5px past it.
+    frame(16);
+    frame((812.5 - 730) / 0.625);
+    expect(viewport.scrollLeft).toBe(800);
+    expect(overshoot()).toBeCloseTo(-12.5);
+    frame(16);
+    expect(overshoot()).toBeCloseTo(-12.5);
+    frame(300);
+    expect(overshoot()).toBeCloseTo(-12.5 * (1 - 0.684643), 3);
+    frame(300);
+    expect(overshoot()).toBe(0);
+    expect(viewport.scrollLeft).toBe(800);
+    expect(frames.size).toBe(0);
+  });
+
+  it('uses the latest movement samples when the user reverses before release', () => {
+    start();
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 60 });
+    pointer('pointermove', { clientX: 80 });
+    pointer('pointerup');
+    frame(16);
+    frame((120 + 12.5) / 0.625);
+    expect(viewport.scrollLeft).toBe(0);
+    expect(overshoot()).toBeCloseTo(12.5);
+  });
+
+  it.each(['paused release', 'old sample', 'low velocity', 'reduced motion'])(
+    'skips momentum after a %s',
+    (condition) => {
+      start();
+      pointer('pointerdown');
+      pointer('pointermove', { clientX: 90 });
+      if (condition === 'old sample') {
+        pointer('pointermove', { clientX: 70, timeStamp: now + 151 });
+      } else if (condition === 'low velocity') {
+        pointer('pointermove', { clientX: 89, timeStamp: now + 40 });
+      } else {
+        pointer('pointermove', { clientX: 70 });
+      }
+      if (condition === 'reduced motion') reducedMotion.matches = true;
+      const left = viewport.scrollLeft;
+      pointer(
+        'pointerup',
+        condition === 'paused release' ? { timeStamp: now + 301 } : {},
+      );
+      expect(frames.size).toBe(0);
+      expect(viewport.scrollLeft).toBe(left);
+    },
+  );
+
+  it('drags with reduced motion and returns from an edge immediately', () => {
+    viewport.scrollLeft = 0;
+    reducedMotion.matches = true;
+    start();
+    expect(pointer('pointerdown').defaultPrevented).toBe(true);
+    pointer('pointermove', { clientX: 300 });
+    expect(overshoot()).toBeGreaterThan(0);
+    pointer('pointerup');
+    expect(overshoot()).toBe(0);
+    expect(viewport.scrollLeft).toBe(0);
+    expect(frames.size).toBe(0);
+  });
+
+  it('keeps returning to an edge while a press is held, then drags on without a jump', () => {
+    viewport.scrollLeft = 700;
+    start();
+    flick();
+    frame(16);
+    frame((812.5 - 730) / 0.625);
+    expect(pointer('pointerdown', { clientX: 400 }).defaultPrevented).toBe(
+      true,
+    );
+    expect(frames.size).toBe(1);
+    frame(16);
+    frame(300);
+    const held = overshoot();
+    expect(held).toBeCloseTo(-12.5 * (1 - 0.684643), 3);
+    pointer('pointermove', { clientX: 400 });
+    expect(frames.size).toBe(0);
+    expect(overshoot()).toBeCloseTo(held);
+    pointer('pointermove', { clientX: 390 });
+    expect(overshoot()).toBeCloseTo(
+      -resistOvershoot((1 - held) ** (1 / 0.85) + 10),
+    );
+    pointer('pointerup', { timeStamp: now + 400 });
+    frame(16);
+    frame(600);
+    expect(overshoot()).toBe(0);
+    expect(viewport.scrollLeft).toBe(800);
+    expect(frames.size).toBe(0);
+  });
+
+  it('lets a still press past an edge finish its return', () => {
+    viewport.scrollLeft = 0;
+    start();
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 300 });
+    pointer('pointerup');
+    frame(16);
+    frame(100);
+    pointer('pointerdown');
+    pointer('pointerup');
+    expect(frames.size).toBe(1);
+    expect(click().defaultPrevented).toBe(false);
+    frame(16);
+    frame(600);
+    expect(overshoot()).toBe(0);
+    expect(frames.size).toBe(0);
+  });
+
+  it.each([1, 2])('leaves motion running for mouse button %i', (button) => {
+    viewport.scrollLeft = 700;
+    start();
+    flick();
+    frame(16);
+    frame(50);
+    expect(pointer('pointerdown', { button }).defaultPrevented).toBe(false);
+    expect(frames.size).toBe(1);
+    frame((812.5 - 730) / 0.625);
+    expect(overshoot()).toBeCloseTo(-12.5);
+  });
+
+  it('bounces the full amount at the far end even when momentum barely passes it', () => {
+    viewport.scrollLeft = 150;
+    start();
+    flick();
+    // 625px of momentum from 180 ends 5px past the end; the bounce still peaks 12.5px past.
+    frame(16);
+    frame((812.5 - 180) / 0.625);
+    expect(viewport.scrollLeft).toBe(800);
+    expect(overshoot()).toBeCloseTo(-12.5);
+  });
+
+  it('bounces only as far as momentum reaches at the start edge', () => {
+    viewport.scrollLeft = 650;
+    start();
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 110 });
+    pointer('pointermove', { clientX: 130 });
+    pointer('pointerup');
+    // From 620, -0.625px/ms reaches 5px past the start, inside the 12.5px bounce.
+    frame(16);
+    frame((620 + 5) / 0.625);
+    expect(viewport.scrollLeft).toBe(0);
+    expect(overshoot()).toBeCloseTo(5);
+  });
+
+  it('freezes a glide in place when pressed', () => {
+    start();
+    flick();
+    frame(16);
+    frame(500);
+    const left = viewport.scrollLeft;
+    pointer('pointerdown');
+    frame(500);
+    expect(viewport.scrollLeft).toBe(left);
+    expect(frames.size).toBe(0);
+  });
+
+  it.each(['wheel', 'touchstart'])(
+    'hands momentum and bounce to native %s input',
+    (type) => {
+      viewport.scrollLeft = 700;
+      start();
+      flick();
+      frame(16);
+      frame((812.5 - 730) / 0.625);
+      expect(native(type).defaultPrevented).toBe(false);
+      expect(frames.size).toBe(0);
+      expect(overshoot()).toBe(0);
+    },
+  );
+
+  it('keeps gliding while late images re-measure an unchanged strip', () => {
+    start();
+    flick();
+    frame(16);
+    frame(200);
+    DragResizeObserver.latest.resize();
+    expect(frames.size).toBe(1);
+    viewport.scrollWidth = 2000;
+    DragResizeObserver.latest.resize();
+    expect(frames.size).toBe(0);
+  });
+
+  it('keeps a drag through re-measurement unless its extent changes', () => {
+    start();
+    drag();
+    DragResizeObserver.latest.resize();
+    expect(viewport.dataset.dragging).toBe('true');
+    viewport.scrollWidth = 1700;
+    DragResizeObserver.latest.resize();
+    expect(viewport.dataset.dragging).toBeUndefined();
+  });
+
+  it('cancels gliding and ignores its stale callback after cleanup', () => {
+    start();
+    flick();
+    frame(16);
+    const stale = [...frames.values()][0];
+    destroy?.();
+    destroy = undefined;
+    const left = viewport.scrollLeft;
+    stale?.(now + 500);
+    expect(viewport.scrollLeft).toBe(left);
+    expect(frames.size).toBe(0);
   });
 
   it('prevents background selection outside the viewport only during the gallery gesture', () => {
@@ -268,166 +612,6 @@ describe('projects native mouse dragging', () => {
     expect(native('selectstart', document).defaultPrevented).toBe(false);
   });
 
-  it('suppresses only the click following a horizontal drag', () => {
-    start();
-    const onClick = vi.fn();
-    viewport.addEventListener('click', onClick);
-    drag();
-    pointer('pointerup');
-    expect(click().defaultPrevented).toBe(true);
-    expect(onClick).not.toHaveBeenCalled();
-
-    pointer('pointerdown');
-    pointer('pointerup');
-    expect(click().defaultPrevented).toBe(false);
-    expect(onClick).toHaveBeenCalledOnce();
-  });
-
-  it('keeps keyboard activation and fresh clicks available after a drag without a click', () => {
-    start();
-    drag();
-    pointer('pointerup');
-    expect(click({ detail: 0 }).defaultPrevented).toBe(false);
-    pointer('pointerdown');
-    pointer('pointerup');
-    expect(click().defaultPrevented).toBe(false);
-  });
-
-  it('glides from recent half-velocity over at most one second and stops at its destination', () => {
-    start();
-    pointer('pointerdown', { timeStamp: 0 });
-    pointer('pointermove', { clientX: 80, timeStamp: 100 });
-    pointer('pointerup', { timeStamp: 110 });
-    expect(viewport.scrollLeft).toBe(120);
-    expect(viewport.dataset.dragging).toBeUndefined();
-    expect(frames.size).toBe(1);
-
-    frame(250);
-    expect(viewport.scrollLeft).toBeCloseTo(177.8125);
-    expect(frames.size).toBe(1);
-    frame(750);
-    expect(viewport.scrollLeft).toBe(220);
-    expect(frames.size).toBe(0);
-    frame(1000);
-    expect(viewport.scrollLeft).toBe(220);
-  });
-
-  it('uses the latest movement samples when the user reverses before release', () => {
-    start();
-    pointer('pointerdown', { timeStamp: 0 });
-    pointer('pointermove', { clientX: 50, timeStamp: 100 });
-    pointer('pointermove', { clientX: 70, timeStamp: 200 });
-    pointer('pointerup', { timeStamp: 210 });
-    expect(viewport.scrollLeft).toBe(130);
-    frame(1000);
-    expect(viewport.scrollLeft).toBe(30);
-    expect(frames.size).toBe(0);
-  });
-
-  it.each(['left', 'right'])(
-    'bounds release gliding at the %s endpoint',
-    (edge) => {
-      viewport.scrollLeft = edge === 'left' ? 100 : 700;
-      start();
-      pointer('pointerdown', { timeStamp: 0 });
-      pointer('pointermove', {
-        clientX: edge === 'left' ? 150 : 50,
-        timeStamp: 100,
-      });
-      pointer('pointerup', { timeStamp: 110 });
-      frame(100);
-      expect(viewport.scrollLeft).toBeGreaterThanOrEqual(0);
-      expect(viewport.scrollLeft).toBeLessThanOrEqual(800);
-      frame(100);
-      expect(viewport.scrollLeft).toBe(edge === 'left' ? 0 : 800);
-      expect(frames.size).toBe(0);
-    },
-  );
-
-  it.each(['paused release', 'old sample', 'low velocity', 'reduced motion'])(
-    'omits release gliding for %s',
-    (condition) => {
-      if (condition === 'reduced motion') reducedMotion.matches = true;
-      start();
-      pointer('pointerdown', { timeStamp: 0 });
-      pointer('pointermove', {
-        clientX: 50,
-        timeStamp: condition === 'old sample' ? 200 : 100,
-      });
-      if (condition === 'low velocity') {
-        pointer('pointermove', { clientX: 49, timeStamp: 200 });
-      }
-      pointer('pointerup', {
-        timeStamp:
-          condition === 'paused release'
-            ? 401
-            : condition === 'low velocity' || condition === 'old sample'
-              ? 210
-              : 110,
-      });
-      expect(frames.size).toBe(0);
-      expect(viewport.scrollLeft).toBe(
-        condition === 'reduced motion'
-          ? 100
-          : condition === 'low velocity'
-            ? 151
-            : 150,
-      );
-    },
-  );
-
-  it.each([
-    'new press',
-    'blur',
-    'resize',
-    'visibilitychange',
-    'media change',
-    'reduced motion',
-    'element resize',
-    'wheel',
-    'touchstart',
-    'keydown',
-  ])('stops release gliding immediately on %s', (trigger) => {
-    start();
-    drag();
-    pointer('pointerup');
-    expect(frames.size).toBe(1);
-    if (trigger === 'new press') pointer('pointerdown');
-    else if (trigger === 'media change') preference.change(false);
-    else if (trigger === 'reduced motion') reducedMotion.change(true);
-    else if (trigger === 'element resize') DragResizeObserver.latest.resize();
-    else if (trigger === 'visibilitychange')
-      document.dispatchEvent(new Event(trigger));
-    else if (trigger === 'wheel' || trigger === 'touchstart')
-      expect(native(trigger).defaultPrevented).toBe(false);
-    else {
-      const event = new Event(trigger, { cancelable: true });
-      window.dispatchEvent(event);
-      expect(event.defaultPrevented).toBe(false);
-    }
-    expect(frames.size).toBe(0);
-    frame(1000);
-    expect(viewport.scrollLeft).toBe(150);
-  });
-
-  it('cancels release gliding and ignores its stale callback after cleanup', () => {
-    start();
-    drag();
-    pointer('pointerup');
-    const previousFrame = [...frames.values()][0];
-    if (!previousFrame) throw new Error('Expected a queued release glide');
-    destroy?.();
-    expect(frames.size).toBe(0);
-    previousFrame(1000);
-    expect(viewport.scrollLeft).toBe(150);
-    expect(frames.size).toBe(0);
-    start();
-    pointer('pointerdown');
-    previousFrame(2000);
-    expect(viewport.scrollLeft).toBe(150);
-    expect(frames.size).toBe(0);
-  });
-
   it.each([
     { pointerType: 'touch' },
     { pointerType: 'pen' },
@@ -442,28 +626,23 @@ describe('projects native mouse dragging', () => {
     );
     expect(native('selectstart').defaultPrevented).toBe(false);
     expect(viewport.scrollLeft).toBe(100);
-    expect(viewport.setPointerCapture).not.toHaveBeenCalled();
   });
 
-  it.each([
-    'no overflow',
-    'non-hover pointer',
-    'hidden tab',
-    'coarse pointer',
-    'reduced motion',
-  ])('does not intercept a gallery with %s', (condition) => {
-    if (condition === 'no overflow')
-      viewport.scrollWidth = viewport.clientWidth;
-    else if (condition === 'non-hover pointer') preference.matches = false;
-    else if (condition === 'coarse pointer') coarsePointer.matches = true;
-    else if (condition === 'reduced motion') reducedMotion.matches = true;
-    else document.hidden = true;
-    start();
-    expect(pointer('pointerdown').defaultPrevented).toBe(false);
-    expect(native('dragstart').defaultPrevented).toBe(false);
-    pointer('pointermove', { clientX: 50 });
-    expect(viewport.scrollLeft).toBe(100);
-  });
+  it.each(['no overflow', 'non-hover pointer', 'hidden tab', 'coarse pointer'])(
+    'does not intercept a gallery with %s',
+    (condition) => {
+      if (condition === 'no overflow')
+        viewport.scrollWidth = viewport.clientWidth;
+      else if (condition === 'non-hover pointer') preference.matches = false;
+      else if (condition === 'coarse pointer') coarsePointer.matches = true;
+      else document.hidden = true;
+      start();
+      expect(pointer('pointerdown').defaultPrevented).toBe(false);
+      expect(native('dragstart').defaultPrevented).toBe(false);
+      pointer('pointermove', { clientX: 50 });
+      expect(viewport.scrollLeft).toBe(100);
+    },
+  );
 
   it('blocks native image dragging whenever the mouse carousel is available', () => {
     start();
@@ -473,35 +652,7 @@ describe('projects native mouse dragging', () => {
     expect(native('dragstart').defaultPrevented).toBe(true);
   });
 
-  it('abandons vertical intent without capturing or preventing further page input', () => {
-    start();
-    pointer('pointerdown');
-    expect(
-      pointer('pointermove', { clientX: 98, clientY: 130 }).defaultPrevented,
-    ).toBe(false);
-    pointer('pointermove', { clientX: 50, clientY: 130 });
-    expect(viewport.scrollLeft).toBe(100);
-    expect(viewport.setPointerCapture).not.toHaveBeenCalled();
-    expect(native('selectstart').defaultPrevented).toBe(false);
-    pointer('pointerup');
-    expect(click().defaultPrevented).toBe(false);
-  });
-
-  it('clamps both ends and reverses immediately relative to the original press', () => {
-    start();
-    pointer('pointerdown');
-    pointer('pointermove', { clientX: -1000 });
-    expect(viewport.scrollLeft).toBe(800);
-    pointer('pointermove', { clientX: 150 });
-    expect(viewport.scrollLeft).toBe(50);
-    pointer('pointermove', { clientX: 1000 });
-    expect(viewport.scrollLeft).toBe(0);
-    pointer('pointermove', { clientX: 50 });
-    expect(viewport.scrollLeft).toBe(150);
-    expect(viewport.setPointerCapture).toHaveBeenCalledOnce();
-  });
-
-  it('tracks off-viewport movement and releases only the initiating pointer', () => {
+  it('tracks movement outside the viewport for the initiating pointer only', () => {
     start();
     drag();
     pointer('pointermove', { pointerId: 99, clientX: -100 });
@@ -522,62 +673,41 @@ describe('projects native mouse dragging', () => {
       pointer('pointermove', { clientX: 10, buttons: 0 }).defaultPrevented,
     ).toBe(false);
     expect(viewport.dataset.dragging).toBeUndefined();
-    expect(viewport.releasePointerCapture).toHaveBeenCalledWith(7);
     pointer('pointermove', { clientX: -100 });
     expect(viewport.scrollLeft).toBe(150);
     expect(click().defaultPrevented).toBe(false);
   });
 
-  it('clears a failed capture and permits the next gesture', () => {
-    viewport.setPointerCapture.mockImplementationOnce(() => {
-      throw new Error('Pointer is no longer active');
-    });
-    start();
-    pointer('pointerdown');
-    expect(pointer('pointermove', { clientX: 50 }).defaultPrevented).toBe(
-      false,
-    );
-    expect(viewport.dataset.dragging).toBeUndefined();
-    expect(viewport.scrollLeft).toBe(100);
-    expect(native('selectstart').defaultPrevented).toBe(false);
-    expect(click().defaultPrevented).toBe(false);
-    drag();
-  });
-
-  it.each(['pointercancel', 'lostpointercapture'])(
-    'clears capture and pending clicks on %s',
-    (eventType) => {
-      start();
-      drag();
-      pointer(eventType, {}, eventType === 'pointercancel' ? window : viewport);
-      expect(viewport.dataset.dragging).toBeUndefined();
-      pointer('pointermove', { clientX: -100 });
-      expect(viewport.scrollLeft).toBe(150);
-      expect(click().defaultPrevented).toBe(false);
-      expect(native('selectstart').defaultPrevented).toBe(false);
-    },
-  );
-
   it.each([
+    'pointercancel',
     'blur',
     'resize',
+    'keydown',
     'visibilitychange',
     'media change',
-    'element resize',
-  ])('releases active capture on %s', (trigger) => {
+    'reduced motion change',
+    'coarse pointer change',
+  ])('interrupts a gesture and its overshoot on %s', (trigger) => {
+    viewport.scrollLeft = 0;
     start();
-    drag();
-    if (trigger === 'media change') preference.change(false);
-    else if (trigger === 'element resize') DragResizeObserver.latest.resize();
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 300 });
+    expect(overshoot()).toBeGreaterThan(0);
+    if (trigger === 'pointercancel') pointer(trigger);
+    else if (trigger === 'media change') preference.change(false);
+    else if (trigger === 'reduced motion change') reducedMotion.change(true);
+    else if (trigger === 'coarse pointer change') coarsePointer.change(true);
     else if (trigger === 'visibilitychange')
       document.dispatchEvent(new Event(trigger));
     else window.dispatchEvent(new Event(trigger));
 
     expect(viewport.dataset.dragging).toBeUndefined();
-    expect(viewport.releasePointerCapture).toHaveBeenCalledWith(7);
+    expect(overshoot()).toBe(0);
+    expect(native('selectstart', document).defaultPrevented).toBe(false);
+    pointer('pointermove', { clientX: 400 });
+    expect(overshoot()).toBe(0);
+    pointer('pointerup');
     expect(click().defaultPrevented).toBe(false);
-    pointer('pointermove', { clientX: -100 });
-    expect(viewport.scrollLeft).toBe(150);
   });
 
   it('rechecks actual overflow while dragging', () => {
@@ -588,7 +718,6 @@ describe('projects native mouse dragging', () => {
       false,
     );
     expect(viewport.dataset.dragging).toBeUndefined();
-    expect(viewport.releasePointerCapture).toHaveBeenCalledWith(7);
     expect(click().defaultPrevented).toBe(false);
   });
 
@@ -598,23 +727,24 @@ describe('projects native mouse dragging', () => {
       expect(native(type).defaultPrevented).toBe(false);
     }
     expect(viewport.scrollLeft).toBe(100);
-    expect(viewport.setPointerCapture).not.toHaveBeenCalled();
   });
 
   it('cleans up safely and isolates Strict Mode setups from stale callbacks', () => {
+    viewport.scrollLeft = 0;
     start();
-    drag();
+    pointer('pointerdown');
+    pointer('pointermove', { clientX: 300 });
     const previousObserver = DragResizeObserver.latest;
     destroy?.();
     destroy?.();
     expect(viewport.dataset.dragging).toBeUndefined();
-    expect(viewport.captured.size).toBe(0);
+    expect(overshoot()).toBe(0);
     expect(previousObserver.disconnect).toHaveBeenCalledOnce();
     expect(pointer('pointerdown').defaultPrevented).toBe(false);
     expect(native('dragstart').defaultPrevented).toBe(false);
     expect(native('selectstart').defaultPrevented).toBe(false);
     pointer('pointermove', { clientX: 0 });
-    expect(viewport.scrollLeft).toBe(150);
+    expect(viewport.scrollLeft).toBe(0);
 
     viewport.scrollLeft = 100;
     start();
@@ -631,6 +761,5 @@ describe('projects native mouse dragging', () => {
     drag();
     window.dispatchEvent(new Event('resize'));
     expect(viewport.dataset.dragging).toBeUndefined();
-    expect(viewport.releasePointerCapture).toHaveBeenCalledWith(7);
   });
 });
