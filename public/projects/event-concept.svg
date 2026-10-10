@@ -1,0 +1,173 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1200"
+  height="900"
+  viewBox="0 0 1200 900"
+  fill="none"
+>
+  <title>Event identity design concept</title>
+  <desc>
+    Layered event tickets with bold black typography, an orange Penvo mark, and
+    a perforated admission stub.
+  </desc>
+  <rect width="1200" height="900" fill="#FF400C" />
+  <path d="M0 636L1200 41" stroke="#E33608" stroke-width="186" />
+  <text
+    x="72"
+    y="181"
+    fill="#24211A"
+    font-family="sans-serif"
+    font-size="112"
+    font-weight="700"
+    letter-spacing="-7"
+  >
+    MAKE WHAT'S NEXT.
+  </text>
+  <g transform="translate(159 327) rotate(-9)">
+    <rect width="853" height="421" rx="13" fill="#25221C" />
+    <circle cx="668" cy="0" r="21" fill="#FF400C" />
+    <circle cx="668" cy="421" r="21" fill="#FF400C" />
+    <path
+      d="M668 32V389"
+      stroke="#767165"
+      stroke-width="2"
+      stroke-dasharray="9 9"
+    />
+    <text
+      x="40"
+      y="91"
+      fill="#F2EBDD"
+      font-family="sans-serif"
+      font-size="29"
+      letter-spacing="5"
+    >
+      PENVO / OPEN STUDIO
+    </text>
+    <text
+      x="40"
+      y="235"
+      fill="#FF400C"
+      font-family="sans-serif"
+      font-size="92"
+      font-weight="700"
+      letter-spacing="-4"
+    >
+      ALL ACCESS.
+    </text>
+    <path d="M41 288H619" stroke="#F2EBDD" stroke-width="2" />
+    <text x="44" y="344" fill="#F2EBDD" font-family="sans-serif" font-size="24">
+      CREATIVE IDEAS / GOOD COMPANY
+    </text>
+  </g>
+  <g transform="translate(143 236) rotate(6)">
+    <rect
+      x="13"
+      y="16"
+      width="853"
+      height="421"
+      rx="13"
+      fill="#70240F"
+      opacity=".23"
+    />
+    <rect width="853" height="421" rx="13" fill="#F2EBDD" />
+    <rect x="0" y="0" width="649" height="65" rx="13" fill="#26241D" />
+    <rect x="0" y="35" width="649" height="30" fill="#26241D" />
+    <text
+      x="37"
+      y="42"
+      fill="#F2EBDD"
+      font-family="sans-serif"
+      font-size="17"
+      letter-spacing="4"
+    >
+      PENVO PRESENTS / OPEN STUDIO
+    </text>
+    <text
+      x="34"
+      y="177"
+      fill="#26241D"
+      font-family="sans-serif"
+      font-size="82"
+      font-weight="700"
+      letter-spacing="-5"
+    >
+      IDEAS IN
+    </text>
+    <text
+      x="34"
+      y="264"
+      fill="#26241D"
+      font-family="sans-serif"
+      font-size="82"
+      font-weight="700"
+      letter-spacing="-5"
+    >
+      MOTION.
+    </text>
+    <path d="M38 300H614" stroke="#26241D" stroke-width="2" />
+    <text
+      x="38"
+      y="347"
+      fill="#26241D"
+      font-family="sans-serif"
+      font-size="23"
+      font-weight="700"
+    >
+      ONE DAY. ENDLESS POSSIBILITIES.
+    </text>
+    <text
+      x="38"
+      y="387"
+      fill="#26241D"
+      font-family="sans-serif"
+      font-size="17"
+      letter-spacing="2"
+    >
+      DESIGN / CONVERSATIONS / CONNECTIONS
+    </text>
+    <circle cx="668" cy="0" r="21" fill="#FF400C" />
+    <circle cx="668" cy="421" r="21" fill="#FF400C" />
+    <path
+      d="M668 32V389"
+      stroke="#B4AC9B"
+      stroke-width="2"
+      stroke-dasharray="9 9"
+    />
+    <g transform="translate(716 82) scale(.095)" fill="#FF400C">
+      <path
+        d="M685.326 635.433L447.77 635.499V817.651L685.326 817.703V635.433Z"
+      />
+      <path
+        d="M447.77 817.651V1000H193.756L0 738.911V181.299H201.034V817.651H447.77Z"
+      />
+      <path d="M685.326 0H201.1L201.034 181.299H685.326V0Z" />
+      <path d="M880 181.299H685.326V635.433H880V181.299Z" />
+    </g>
+    <text
+      x="704"
+      y="230"
+      fill="#26241D"
+      font-family="sans-serif"
+      font-size="19"
+      font-weight="700"
+    >
+      ADMIT ONE
+    </text>
+    <text
+      x="705"
+      y="271"
+      fill="#26241D"
+      font-family="sans-serif"
+      font-size="41"
+      font-weight="700"
+      letter-spacing="-2"
+    >
+      001
+    </text>
+    <path
+      d="M711 310V367M720 310V367M733 310V367M741 310V367M749 310V367M763 310V367M775 310V367M783 310V367M797 310V367M808 310V367"
+      stroke="#26241D"
+      stroke-width="5"
+    />
+  </g>
+</svg>

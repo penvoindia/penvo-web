@@ -1,0 +1,151 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1200"
+  height="900"
+  viewBox="0 0 1200 900"
+  fill="none"
+>
+  <title>Editorial design concept</title>
+  <desc>
+    A pair of graphic journals with bold typography and the Penvo monogram.
+  </desc>
+  <rect width="1200" height="900" fill="#E9E5DC" />
+  <path d="M0 700L1200 420V900H0V700Z" fill="#DED8CC" />
+  <g transform="translate(760 115) rotate(11)">
+    <rect x="12" y="18" width="330" height="650" fill="#B9B3A7" opacity=".3" />
+    <rect width="330" height="650" fill="#171717" />
+    <path d="M20 0V650" stroke="#454440" stroke-width="4" />
+    <text
+      x="58"
+      y="84"
+      fill="#F2EEE5"
+      font-family="sans-serif"
+      font-size="22"
+      letter-spacing="5"
+    >
+      THE JOURNAL
+    </text>
+    <text
+      x="58"
+      y="420"
+      fill="#FF400C"
+      font-family="sans-serif"
+      font-size="150"
+      font-weight="700"
+    >
+      02
+    </text>
+    <path d="M58 472H284" stroke="#F2EEE5" stroke-width="2" />
+    <text x="58" y="523" fill="#F2EEE5" font-family="sans-serif" font-size="21">
+      Ideas, made tangible.
+    </text>
+    <text
+      x="58"
+      y="597"
+      fill="#F2EEE5"
+      font-family="sans-serif"
+      font-size="17"
+      letter-spacing="3"
+    >
+      PENVO / EDITIONS
+    </text>
+  </g>
+  <g transform="translate(227 111) rotate(-7)">
+    <rect x="16" y="23" width="526" height="690" fill="#ACA598" opacity=".4" />
+    <rect width="526" height="690" fill="#FF400C" />
+    <path d="M17 0V690" stroke="#D93407" stroke-width="3" />
+    <text
+      x="55"
+      y="62"
+      fill="#171717"
+      font-family="sans-serif"
+      font-size="18"
+      font-weight="700"
+      letter-spacing="3"
+    >
+      PENVO JOURNAL / VOL. 01
+    </text>
+    <path d="M55 92H472" stroke="#171717" stroke-width="2" />
+    <text
+      x="49"
+      y="230"
+      fill="#171717"
+      font-family="sans-serif"
+      font-size="100"
+      font-weight="700"
+      letter-spacing="-7"
+    >
+      FORM
+    </text>
+    <text
+      x="49"
+      y="333"
+      fill="#171717"
+      font-family="sans-serif"
+      font-size="87"
+      font-weight="700"
+      letter-spacing="-7"
+    >
+      FOLLOWS
+    </text>
+    <text
+      x="49"
+      y="436"
+      fill="#171717"
+      font-family="sans-serif"
+      font-size="85"
+      font-weight="700"
+      letter-spacing="-6"
+    >
+      FEELING.
+    </text>
+    <rect x="55" y="493" width="108" height="122" fill="#171717" />
+    <g transform="translate(79 514) scale(.066)" fill="#F8F5EF">
+      <path
+        d="M685.326 635.433L447.77 635.499V817.651L685.326 817.703V635.433Z"
+      />
+      <path
+        d="M447.77 817.651V1000H193.756L0 738.911V181.299H201.034V817.651H447.77Z"
+      />
+      <path d="M685.326 0H201.1L201.034 181.299H685.326V0Z" />
+      <path d="M880 181.299H685.326V635.433H880V181.299Z" />
+    </g>
+    <text
+      x="189"
+      y="536"
+      fill="#171717"
+      font-family="sans-serif"
+      font-size="21"
+    >
+      A study in identity,
+    </text>
+    <text
+      x="189"
+      y="567"
+      fill="#171717"
+      font-family="sans-serif"
+      font-size="21"
+    >
+      culture, and the things
+    </text>
+    <text
+      x="189"
+      y="598"
+      fill="#171717"
+      font-family="sans-serif"
+      font-size="21"
+    >
+      we make together.
+    </text>
+    <text
+      x="55"
+      y="651"
+      fill="#171717"
+      font-family="sans-serif"
+      font-size="15"
+      letter-spacing="3"
+    >
+      DESIGN / CULTURE / IDEAS
+    </text>
+  </g>
+</svg>

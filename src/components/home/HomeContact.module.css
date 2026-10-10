@@ -1,0 +1,115 @@
+.section {
+  padding-block: var(--layout-section-space-large)
+    var(--layout-section-space-compact);
+  background: radial-gradient(
+    100% 90% at 50% 0%,
+    var(--color-surface-inverse) 0%,
+    var(--color-concrete) 60%
+  );
+  color: var(--color-text-inverse);
+  text-align: center;
+  color-scheme: light;
+}
+
+.eyebrow {
+  margin-bottom: 24px;
+  color: var(--color-bright-orange);
+}
+
+.heading {
+  width: 100%;
+}
+
+.headlineLine {
+  display: block;
+}
+
+.greetingLine {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.18em;
+  min-height: var(--type-display-mega-line-height);
+}
+
+.greetingButton {
+  display: inline-block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-bright-orange);
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.greetingButton:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.greetingButton:focus-visible {
+  outline-color: var(--color-focus-ring);
+  outline-offset: 8px;
+}
+
+.greetingWord {
+  display: inline-block;
+  white-space: nowrap;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.greetingWord[data-swapping='true'] {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.description {
+  max-width: 560px;
+  margin: 24px auto 0;
+  color: color-mix(
+    in srgb,
+    var(--color-attractive-black) 80%,
+    var(--color-surface-inverse)
+  );
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.actions .consultationButton {
+  --button-text: var(--color-full-white);
+}
+
+.actions .servicesButton {
+  --button-outline-color: var(--color-bright-orange);
+  --button-surface-color: var(--color-bright-orange);
+  --button-text: var(--color-bright-orange);
+  --button-hover-text: var(--color-full-white);
+}
+
+@media (max-width: 767px) {
+  .actions {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .greetingWord,
+  .greetingWord[data-swapping='true'] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

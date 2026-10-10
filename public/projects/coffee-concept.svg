@@ -1,0 +1,125 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1200"
+  height="900"
+  viewBox="0 0 1200 900"
+  fill="none"
+>
+  <title>Coffee packaging design concept</title>
+  <desc>
+    A black coffee pouch with an orange typographic label, a cream cup, and the
+    Penvo monogram.
+  </desc>
+  <rect width="1200" height="900" fill="#DDD5C7" />
+  <rect y="663" width="1200" height="237" fill="#C9BEAC" />
+  <path
+    d="M210 738C210 700 382 671 566 671C750 671 922 700 922 738C922 776 750 802 566 802C382 802 210 776 210 738Z"
+    fill="#A89A84"
+    opacity=".27"
+  />
+  <path
+    d="M336 141H695L746 716C662 766 359 766 280 716L336 141Z"
+    fill="#232420"
+  />
+  <path d="M336 141H695L681 195H348L336 141Z" fill="#383A33" />
+  <path d="M348 168H681" stroke="#575B4E" stroke-width="3" />
+  <path
+    d="M336 141L310 689L280 716L336 141ZM695 141L716 689L746 716L695 141Z"
+    fill="#191A17"
+  />
+  <path d="M325 306H707L720 651H306L325 306Z" fill="#FF400C" />
+  <text
+    x="358"
+    y="354"
+    fill="#22231F"
+    font-family="sans-serif"
+    font-size="17"
+    font-weight="700"
+    letter-spacing="4"
+  >
+    PENVO / COFFEE CONCEPT
+  </text>
+  <text
+    x="350"
+    y="447"
+    fill="#22231F"
+    font-family="sans-serif"
+    font-size="87"
+    font-weight="700"
+    letter-spacing="-5"
+  >
+    DAILY
+  </text>
+  <text
+    x="350"
+    y="533"
+    fill="#22231F"
+    font-family="sans-serif"
+    font-size="85"
+    font-weight="700"
+    letter-spacing="-5"
+  >
+    RITUAL.
+  </text>
+  <path d="M358 563H670" stroke="#22231F" stroke-width="2" />
+  <text x="358" y="599" fill="#22231F" font-family="sans-serif" font-size="18">
+    A good start, every day.
+  </text>
+  <text
+    x="358"
+    y="629"
+    fill="#22231F"
+    font-family="sans-serif"
+    font-size="14"
+    letter-spacing="3"
+  >
+    WHOLE BEAN / 250G
+  </text>
+  <g transform="translate(481 219) scale(.05)" fill="#F2EEE4">
+    <path
+      d="M685.326 635.433L447.77 635.499V817.651L685.326 817.703V635.433Z"
+    />
+    <path
+      d="M447.77 817.651V1000H193.756L0 738.911V181.299H201.034V817.651H447.77Z"
+    />
+    <path d="M685.326 0H201.1L201.034 181.299H685.326V0Z" />
+    <path d="M880 181.299H685.326V635.433H880V181.299Z" />
+  </g>
+  <ellipse cx="861" cy="745" rx="119" ry="25" fill="#A39680" opacity=".4" />
+  <path
+    d="M937 559C1039 525 1065 687 938 690"
+    stroke="#F3EEE3"
+    stroke-width="28"
+  />
+  <path
+    d="M765 552H954L941 704C931 755 788 755 778 704L765 552Z"
+    fill="#F3EEE3"
+  />
+  <ellipse cx="859" cy="552" rx="95" ry="26" fill="#FCF9F0" />
+  <ellipse cx="859" cy="552" rx="77" ry="18" fill="#4D3829" />
+  <text
+    x="800"
+    y="657"
+    fill="#25251F"
+    font-family="sans-serif"
+    font-size="32"
+    font-weight="700"
+    letter-spacing="-1"
+  >
+    Penvo
+  </text>
+  <path
+    d="M825 492C808 470 847 450 830 428M880 490C863 468 902 448 885 426"
+    stroke="#B5A894"
+    stroke-width="5"
+    stroke-linecap="round"
+  />
+  <g transform="translate(239 776) rotate(-23)">
+    <ellipse rx="27" ry="17" fill="#5B4635" />
+    <path d="M-21 2C-8-11 8 11 21-2" stroke="#A89982" stroke-width="3" />
+  </g>
+  <g transform="translate(286 814) rotate(27)">
+    <ellipse rx="27" ry="17" fill="#5B4635" />
+    <path d="M-21 2C-8-11 8 11 21-2" stroke="#A89982" stroke-width="3" />
+  </g>
+</svg>

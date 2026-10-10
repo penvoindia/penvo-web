@@ -1,0 +1,188 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1200"
+  height="900"
+  viewBox="0 0 1200 900"
+  fill="none"
+>
+  <title>Analytics dashboard design concept</title>
+  <desc>
+    A bright dashboard interface with a dark Penvo sidebar, performance cards,
+    and an orange chart.
+  </desc>
+  <rect width="1200" height="900" fill="#22231F" />
+  <circle cx="1074" cy="770" r="300" fill="#33352F" />
+  <rect
+    x="98"
+    y="111"
+    width="1034"
+    height="716"
+    rx="22"
+    fill="#111210"
+    opacity=".4"
+  />
+  <rect x="78" y="91" width="1034" height="716" rx="22" fill="#F1F0E9" />
+  <path d="M78 132H1112" stroke="#DBDCD3" stroke-width="2" />
+  <circle cx="106" cy="112" r="6" fill="#FF400C" />
+  <circle cx="126" cy="112" r="6" fill="#D5D5CB" />
+  <circle cx="146" cy="112" r="6" fill="#D5D5CB" />
+  <rect x="460" y="102" width="267" height="21" rx="6" fill="#E4E4DB" />
+  <path d="M78 134H267V807H100C88 807 78 797 78 785V134Z" fill="#171A16" />
+  <g transform="translate(113 165) scale(.046)" fill="#FF400C">
+    <path
+      d="M685.326 635.433L447.77 635.499V817.651L685.326 817.703V635.433Z"
+    />
+    <path
+      d="M447.77 817.651V1000H193.756L0 738.911V181.299H201.034V817.651H447.77Z"
+    />
+    <path d="M685.326 0H201.1L201.034 181.299H685.326V0Z" />
+    <path d="M880 181.299H685.326V635.433H880V181.299Z" />
+  </g>
+  <text
+    x="166"
+    y="194"
+    fill="#F5F5ED"
+    font-family="sans-serif"
+    font-size="22"
+    font-weight="700"
+  >
+    Penvo
+  </text>
+  <rect x="97" y="254" width="151" height="42" rx="8" fill="#FF400C" />
+  <text
+    x="119"
+    y="281"
+    fill="#171A16"
+    font-family="sans-serif"
+    font-size="17"
+    font-weight="700"
+  >
+    Overview
+  </text>
+  <text x="119" y="339" fill="#BDBFB5" font-family="sans-serif" font-size="17">
+    Audience
+  </text>
+  <text x="119" y="397" fill="#BDBFB5" font-family="sans-serif" font-size="17">
+    Campaigns
+  </text>
+  <text x="119" y="455" fill="#BDBFB5" font-family="sans-serif" font-size="17">
+    Reports
+  </text>
+  <path d="M107 709H238" stroke="#363B32" stroke-width="2" />
+  <text x="119" y="755" fill="#BDBFB5" font-family="sans-serif" font-size="16">
+    Your workspace
+  </text>
+  <text
+    x="302"
+    y="196"
+    fill="#1C211A"
+    font-family="sans-serif"
+    font-size="32"
+    font-weight="700"
+    letter-spacing="-1"
+  >
+    Clarity, at a glance.
+  </text>
+  <text x="302" y="231" fill="#73786D" font-family="sans-serif" font-size="17">
+    A bigger picture of your next move.
+  </text>
+  <rect x="949" y="166" width="121" height="40" rx="20" fill="#E2E4DA" />
+  <text x="973" y="191" fill="#41483A" font-family="sans-serif" font-size="15">
+    This month
+  </text>
+  <rect x="302" y="274" width="363" height="169" rx="14" fill="#FF400C" />
+  <text x="326" y="314" fill="#20221C" font-family="sans-serif" font-size="17">
+    Total reach
+  </text>
+  <text
+    x="326"
+    y="384"
+    fill="#20221C"
+    font-family="sans-serif"
+    font-size="57"
+    font-weight="700"
+    letter-spacing="-3"
+  >
+    124.8K
+  </text>
+  <text x="329" y="416" fill="#20221C" font-family="sans-serif" font-size="16">
+    ↗ 18.6% this month
+  </text>
+  <rect x="685" y="274" width="184" height="169" rx="14" fill="#FFFFFF" />
+  <text x="705" y="314" fill="#73786D" font-family="sans-serif" font-size="16">
+    Engagement
+  </text>
+  <text
+    x="705"
+    y="382"
+    fill="#20221C"
+    font-family="sans-serif"
+    font-size="44"
+    font-weight="700"
+    letter-spacing="-2"
+  >
+    8.42%
+  </text>
+  <text x="707" y="416" fill="#73786D" font-family="sans-serif" font-size="15">
+    +2.1% growth
+  </text>
+  <rect x="888" y="274" width="184" height="169" rx="14" fill="#FFFFFF" />
+  <text x="908" y="314" fill="#73786D" font-family="sans-serif" font-size="16">
+    New leads
+  </text>
+  <text
+    x="908"
+    y="382"
+    fill="#20221C"
+    font-family="sans-serif"
+    font-size="44"
+    font-weight="700"
+    letter-spacing="-2"
+  >
+    1,284
+  </text>
+  <text x="910" y="416" fill="#73786D" font-family="sans-serif" font-size="15">
+    +12.4% growth
+  </text>
+  <rect x="302" y="466" width="770" height="300" rx="14" fill="#FFFFFF" />
+  <text
+    x="326"
+    y="508"
+    fill="#20221C"
+    font-family="sans-serif"
+    font-size="21"
+    font-weight="700"
+  >
+    The momentum is yours.
+  </text>
+  <path
+    d="M330 550H1044M330 603H1044M330 656H1044M330 709H1044"
+    stroke="#E9EBE3"
+    stroke-width="2"
+  />
+  <path
+    d="M338 690L415 674L490 686L567 625L642 641L720 587L796 598L874 549L952 566L1034 528V710H338V690Z"
+    fill="#FF400C"
+    opacity=".09"
+  />
+  <path
+    d="M338 690L415 674L490 686L567 625L642 641L720 587L796 598L874 549L952 566L1034 528"
+    stroke="#FF400C"
+    stroke-width="6"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+  <circle cx="1034" cy="528" r="8" fill="#FF400C" />
+  <text x="331" y="742" fill="#8D9286" font-family="sans-serif" font-size="13">
+    01
+  </text>
+  <text x="564" y="742" fill="#8D9286" font-family="sans-serif" font-size="13">
+    10
+  </text>
+  <text x="797" y="742" fill="#8D9286" font-family="sans-serif" font-size="13">
+    20
+  </text>
+  <text x="1021" y="742" fill="#8D9286" font-family="sans-serif" font-size="13">
+    30
+  </text>
+</svg>

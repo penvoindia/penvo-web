@@ -1,0 +1,96 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1200"
+  height="900"
+  viewBox="0 0 1200 900"
+  fill="none"
+>
+  <title>Social campaign design concept</title>
+  <desc>
+    A bold orange social poster with large type, circles, and the Penvo
+    monogram.
+  </desc>
+  <rect width="1200" height="900" fill="#1C1C1A" />
+  <g transform="translate(183 113) rotate(-8)">
+    <rect width="614" height="740" fill="#D8D1C0" />
+    <circle cx="307" cy="360" r="201" stroke="#1C1C1A" stroke-width="55" />
+    <path d="M0 550L614 215" stroke="#FF400C" stroke-width="76" />
+  </g>
+  <g transform="translate(372 32) rotate(5)">
+    <rect x="16" y="16" width="628" height="775" fill="#080808" opacity=".4" />
+    <rect width="628" height="775" fill="#FF400C" />
+    <circle cx="551" cy="159" r="116" fill="#F4F0E7" />
+    <g transform="translate(47 48) scale(.055)" fill="#191919">
+      <path
+        d="M685.326 635.433L447.77 635.499V817.651L685.326 817.703V635.433Z"
+      />
+      <path
+        d="M447.77 817.651V1000H193.756L0 738.911V181.299H201.034V817.651H447.77Z"
+      />
+      <path d="M685.326 0H201.1L201.034 181.299H685.326V0Z" />
+      <path d="M880 181.299H685.326V635.433H880V181.299Z" />
+    </g>
+    <text
+      x="47"
+      y="168"
+      fill="#191919"
+      font-family="sans-serif"
+      font-size="18"
+      letter-spacing="4"
+    >
+      PENVO / CREATIVE STUDIO
+    </text>
+    <text
+      x="39"
+      y="341"
+      fill="#191919"
+      font-family="sans-serif"
+      font-size="116"
+      font-weight="700"
+      letter-spacing="-9"
+    >
+      GOOD
+    </text>
+    <text
+      x="39"
+      y="464"
+      fill="#191919"
+      font-family="sans-serif"
+      font-size="116"
+      font-weight="700"
+      letter-spacing="-9"
+    >
+      IDEAS
+    </text>
+    <text
+      x="39"
+      y="587"
+      fill="#F4F0E7"
+      font-family="sans-serif"
+      font-size="116"
+      font-weight="700"
+      letter-spacing="-9"
+    >
+      TRAVEL.
+    </text>
+    <path d="M47 632H579" stroke="#191919" stroke-width="2" />
+    <text x="47" y="684" fill="#191919" font-family="sans-serif" font-size="23">
+      Make your next move.
+    </text>
+    <path
+      d="M475 708H573M543 678L573 708L543 738"
+      stroke="#191919"
+      stroke-width="7"
+    />
+    <text
+      x="47"
+      y="739"
+      fill="#191919"
+      font-family="sans-serif"
+      font-size="15"
+      letter-spacing="3"
+    >
+      IDENTITY / DIGITAL / CULTURE
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,117 @@
+.host {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+}
+
+.cursor {
+  display: none;
+}
+
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .host {
+    overflow: clip;
+  }
+
+  .host[data-cursor-visible='true'],
+  .host[data-cursor-visible='true'] > div,
+  .host[data-cursor-visible='true'] > div * {
+    cursor: none;
+  }
+
+  .cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: block;
+    width: 66px;
+    height: 66px;
+    margin-top: -33px;
+    margin-left: -33px;
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--motion-duration-fast) var(--motion-ease-standard);
+  }
+
+  .host[data-cursor-visible='true'] .cursor {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .visual {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: var(--color-full-white);
+  }
+
+  .visual::before {
+    position: absolute;
+    inset: 0;
+    background: var(--color-bright-orange);
+    border-radius: 50%;
+    content: '';
+    transform: scale(0.72);
+    transition: transform var(--motion-duration-base) var(--motion-ease-enter);
+  }
+
+  .host[data-cursor-visible='true'] .visual::before {
+    transform: scale(1);
+  }
+
+  .host[data-cursor-visible='true'][data-cursor-pressed='true']
+    .visual::before {
+    transform: scale(calc(56 / 66));
+  }
+
+  .visual svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -5px;
+    margin-left: -5px;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+    transition: transform var(--motion-duration-base)
+      var(--motion-ease-standard);
+  }
+
+  .left {
+    transform: translateX(-10px);
+  }
+
+  .right {
+    transform: translateX(10px);
+  }
+
+  .host[data-cursor-pressed='true'] .left {
+    transform: translateX(-5px);
+  }
+
+  .host[data-cursor-pressed='true'] .right {
+    transform: translateX(5px);
+  }
+}
+
+@media (any-pointer: coarse) {
+  .host {
+    overflow: visible;
+  }
+
+  .host[data-cursor-visible='true'],
+  .host[data-cursor-visible='true'] > div,
+  .host[data-cursor-visible='true'] > div * {
+    cursor: auto;
+  }
+
+  .cursor {
+    display: none;
+  }
+}

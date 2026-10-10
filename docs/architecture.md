@@ -30,3 +30,14 @@ The hero is followed by `HomeBuild`, the scroll-driven “Let’s build” secti
 then `HomeWorkTogether` provides the contact marquee. `HomeProcess` follows it
 with server-rendered process content and a small client controller for the
 desktop and tablet horizontal scroll progression.
+`HomeTestimonials` follows Approach with server-rendered testimonial cards
+and a small client wrapper for native horizontal scrolling controls.
+`HomeProjects` follows testimonials with server-rendered project cards and
+CSS hover/focus covers. A small `ProjectsGallery` client wrapper adds native
+mouse dragging, bounded release glide, and an overflow-aware desktop cursor.
+The server component accepts typed project data and filters featured records;
+the current fourteen previews are the default. A count-independent layout
+places mixed portrait, square, and landscape covers in the same carousel.
+`HomeContact` closes the current homepage with a light contact intro. Its
+server-rendered heading and copy isolate the rotating greeting in a small
+Client Component.

@@ -1,6 +1,6 @@
 import { sites } from '@openai/sites-vite-plugin';
 import vinext from 'vinext';
-import { nitro } from 'nitro/vite';
+/*import { nitro } from 'nitro/vite';*/
 import { defineConfig } from 'vite';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
 
@@ -51,7 +51,7 @@ export default defineConfig(async () => {
     plugins: [
       vinext(),
       sites(),
-      nitro(),
+      /*nitro(),*/
       cloudflare({
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },
         config: localBindingConfig,

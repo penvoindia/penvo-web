@@ -1,0 +1,280 @@
+.section {
+  --testimonial-card-width: clamp(270px, 82vw, 420px);
+  --testimonial-card-padding: 24px;
+  --testimonial-card-gap: var(--layout-grid-gap);
+  --testimonial-section-space: 60px;
+
+  padding-block: var(--testimonial-section-space);
+  overflow: hidden;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  color-scheme: dark;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.headingCopy {
+  min-width: 0;
+}
+
+.eyebrow {
+  margin-bottom: 18px;
+}
+
+.heading {
+  max-width: 980px;
+}
+
+.heading > span {
+  display: block;
+}
+
+.cards {
+  display: flex;
+  align-items: stretch;
+  gap: var(--testimonial-card-gap);
+  margin: 70px 0 0;
+  padding: 0
+    max(
+      var(--layout-gutter),
+      calc((100% - var(--layout-max-width)) / 2 + var(--layout-gutter))
+    );
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  list-style: none;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: max(
+    var(--layout-gutter),
+    calc((100% - var(--layout-max-width)) / 2 + var(--layout-gutter))
+  );
+}
+
+.cards::-webkit-scrollbar {
+  display: none;
+}
+
+.cards:focus-visible {
+  outline-offset: -3px;
+}
+
+.card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 var(--testimonial-card-width);
+  min-height: calc(var(--testimonial-card-width) * 4 / 3);
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 20px;
+  background: color-mix(
+    in srgb,
+    var(--color-surface-secondary) 24%,
+    var(--color-surface-primary)
+  );
+  scroll-snap-align: start;
+}
+
+.cardContent {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: var(--testimonial-card-padding);
+}
+
+.card:not(.videoCard) {
+  transition:
+    background-color var(--motion-duration-fast) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard),
+    color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.avatar {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.quote {
+  margin-top: 20px;
+}
+
+.project,
+.description {
+  color: var(--color-text-muted);
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.description {
+  margin-top: 20px;
+}
+
+.attribution {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 50px;
+}
+
+.clientDetails {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.role {
+  margin-top: 5px;
+  color: var(--color-text-muted);
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.videoCard {
+  background: var(--color-attractive-black);
+  color: var(--color-full-white);
+}
+
+.poster,
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.poster {
+  object-position: 50% 30%;
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-pure-black) 15%, transparent),
+    color-mix(in srgb, var(--color-pure-black) 15%, transparent) 40%,
+    color-mix(in srgb, var(--color-pure-black) 80%, transparent)
+  );
+}
+
+.videoPreview {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.playMark {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 44px;
+  border: 1px solid color-mix(in srgb, var(--color-full-white) 25%, transparent);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--color-pure-black) 35%, transparent);
+}
+
+.playMark > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.videoCard .cardContent {
+  pointer-events: none;
+}
+
+.videoCard .avatar {
+  object-position: 50% 25%;
+}
+
+.videoCard .role {
+  color: var(--color-text-muted);
+}
+
+.navigation {
+  display: none;
+  flex: none;
+  gap: 10px;
+}
+
+.navigationButton {
+  --button-padding-inline: 14px;
+}
+
+.arrow {
+  width: 20px;
+  height: 20px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:not(.videoCard):hover {
+    border-color: var(--color-full-white);
+    background: var(--color-full-white);
+    color: var(--color-pure-black);
+  }
+
+  .card:not(.videoCard):hover .project,
+  .card:not(.videoCard):hover .description,
+  .card:not(.videoCard):hover .role {
+    color: var(--color-pure-black);
+  }
+}
+
+@media (min-width: 768px) {
+  .section {
+    --testimonial-card-width: clamp(310px, 42vw, 440px);
+    --testimonial-card-padding: 32px;
+    --testimonial-section-space: 80px;
+  }
+
+  .header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    --testimonial-card-width: clamp(350px, 38vw, 440px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .section {
+    --testimonial-card-width: clamp(340px, 26vw, 460px);
+    --testimonial-card-gap: 30px;
+    --testimonial-section-space: 100px;
+  }
+
+  .navigation {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:not(.videoCard),
+  .project,
+  .description,
+  .role {
+    transition: none;
+  }
+
+  .cards {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+}
