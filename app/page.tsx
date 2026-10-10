@@ -5,6 +5,7 @@ import { HomeContact } from '@/src/components/home/HomeContact';
 import { HomeProcess } from '@/src/components/home/HomeProcess';
 import { HomeProjects } from '@/src/components/home/HomeProjects';
 import { HomeServices } from '@/src/components/home/HomeServices';
+import { HomeShowreel } from '@/src/components/home/HomeShowreel';
 import { HomeTestimonials } from '@/src/components/home/HomeTestimonials';
 import { HomeWorkTogether } from '@/src/components/home/HomeWorkTogether';
 import { HomeBuild } from '@/src/components/home/HomeBuild';
@@ -24,6 +25,7 @@ export default function HomePage() {
       <HomeWorkTogether />
       <HomeProcess />
       <HomeTestimonials />
+      <HomeShowreel />
       <HomeProjects />
       <HomeContact />
     </main>

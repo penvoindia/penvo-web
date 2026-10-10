@@ -84,6 +84,25 @@ all observers, listeners, and queued frames are cleaned up on unmount. There
 is no autoplay. See `docs/home-testimonials.md` for the responsive composition,
 reference mapping, and content placeholders.
 
+## Showreel
+
+The showreel reproduces the reference hero's video frame with native sticky
+positioning. From 1024px with motion allowed, the frame scales from 100% to
+85% and moves to the viewport centre over the 21% of a viewport height before
+it pins. The scale follows scroll through the reference's one-second
+`expo.out` catch-up. The frame then stays pinned for 140% of the viewport
+height while the projects section scrolls over it for the last 100%. The
+reference also recolours its page as the reel arrives; Penvo turns its black
+page white from the section top at 20% of the viewport to 20% of a viewport
+after the pin starts, with `power1.out` and no lag. The page returns to black
+once projects fully covers the reel. These measured values are local to the
+showreel rather than shared motion tokens.
+Resizing and profile changes re-measure without easing. Below 1024px and with
+reduced motion, the frame is static. The muted loop plays only while visible
+and uncovered, and pauses in hidden tabs. Reduced motion renders the static
+poster without autoplay or preloading. The visible pause and resume controls
+were removed at the user's request. See `docs/home-showreel.md`.
+
 ## Project gallery
 
 The project gallery reproduces the reference's free-mode slider with native
@@ -104,9 +123,9 @@ unless the scroll extent changes. Mouse presses do not assign keyboard focus.
 Desktop fine pointers use a section-scoped brand orange cursor that opens from
 a 14px dot to 66px and shrinks to 56px when pressed, all over 300ms, following
 the mouse with the reference's one-eighth interpolation. Project cards fade a
-10px inset Concrete cover in over 300ms on hover or keyboard focus, zoom the
-image over 500ms, and raise each text line from a clipped baseline over 500ms
-(400ms on leaving). Reduced motion keeps dragging direct and removes momentum,
+full white cover in over 300ms on hover or keyboard focus, zoom the image over
+500ms, and raise each text line from a clipped baseline over 500ms (400ms on
+leaving). Reduced motion keeps dragging direct and removes momentum,
 the cursor, and animated reveals. Card markup stays server-rendered. See
 `docs/home-projects.md` for the reference mapping, formulas, and preview
 content.

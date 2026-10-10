@@ -1,7 +1,8 @@
 # Home testimonials
 
 `HomeTestimonials` sits directly after the Approach (`HomeProcess`) section
-and before `HomeContact`. It uses a full-width black background and follows
+and before `HomeShowreel`. It shows the black page through a transparent
+section, so the showreel's page colour change reaches it, and follows
 the supplied reference's left-aligned two-line heading, tall dark quote cards,
 portrait-backed video card, circular avatars, and partially visible next card.
 The outer rounded panel and inset frame have been removed across all breakpoints.

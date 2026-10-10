@@ -4,6 +4,12 @@ export interface Project {
   readonly category: string;
   readonly year: string;
   readonly brand: string;
+  /** Optional brand mark shown on the project hover/focus cover. */
+  readonly logo?: {
+    readonly src: string;
+    readonly width: number;
+    readonly height: number;
+  };
   readonly image: string;
   readonly alt: string;
   readonly width: number;
@@ -32,6 +38,7 @@ export const homeProjects = [
     category: 'Brand identity',
     year: '2026',
     brand: 'Penvo',
+    logo: { src: '/projects/logos/demo-logo-01.svg', width: 110, height: 21 },
     image: '/projects/penvo-identity.webp',
     alt: 'Close-up of an orange hoodie with the white Penvo logo.',
     width: 1484,
@@ -44,6 +51,7 @@ export const homeProjects = [
     category: 'Digital brand concept',
     year: '2026',
     brand: 'Penvo',
+    logo: { src: '/projects/logos/demo-logo-02.svg', width: 159, height: 34 },
     image: '/projects/penvo-digital.webp',
     alt: 'Close-up of a smartphone home screen with an orange Penvo app icon.',
     width: 1000,
@@ -57,6 +65,7 @@ export const homeProjects = [
     category: 'Packaging design concept',
     year: '2026',
     brand: 'Packaging concept',
+    logo: { src: '/projects/logos/demo-logo-03.svg', width: 136, height: 32 },
     image: '/projects/packaging-concept.webp',
     alt: 'Amber bottle and cream cartons with orange and black circular graphics.',
     width: 1536,
@@ -69,6 +78,7 @@ export const homeProjects = [
     category: 'Web design concept',
     year: '2026',
     brand: 'Wellness concept',
+    logo: { src: '/projects/logos/demo-logo-04.svg', width: 185, height: 34 },
     image: '/projects/wellness-digital.webp',
     alt: 'Desktop monitor showing a botanical website concept in a sunlit workspace.',
     width: 1536,
@@ -81,6 +91,7 @@ export const homeProjects = [
     category: 'Brand & print concept',
     year: '2026',
     brand: 'Stationery concept',
+    logo: { src: '/projects/logos/demo-logo-05.svg', width: 190, height: 36 },
     image: '/projects/paper-and-print.webp',
     alt: 'Textured stationery and business cards with black and orange geometric graphics.',
     width: 1536,
@@ -93,6 +104,7 @@ export const homeProjects = [
     category: 'Editorial design concept',
     year: '2026',
     brand: 'Journal concept',
+    logo: { src: '/projects/logos/demo-logo-07.svg', width: 131, height: 44 },
     image: '/projects/editorial-concept.svg',
     alt: 'Graphic journal cover with bold typography and the Penvo monogram.',
     width: 1200,
@@ -106,6 +118,7 @@ export const homeProjects = [
     category: 'Campaign art direction concept',
     year: '2026',
     brand: 'Outdoor concept',
+    logo: { src: '/projects/logos/demo-logo-08.svg', width: 119, height: 26 },
     image: '/projects/campaign-concept.webp',
     alt: 'Person in an orange rain jacket hiking through a green forest beside a waterfall.',
     width: 1536,
@@ -118,6 +131,7 @@ export const homeProjects = [
     category: 'Product design concept',
     year: '2026',
     brand: 'Dashboard concept',
+    logo: { src: '/projects/logos/demo-logo-10.svg', width: 114, height: 30 },
     image: '/projects/dashboard-concept.svg',
     alt: 'Analytics dashboard concept with charts, metric cards, and orange accents.',
     width: 1200,
@@ -130,6 +144,7 @@ export const homeProjects = [
     category: 'Event identity concept',
     year: '2026',
     brand: 'Event concept',
+    logo: { src: '/projects/logos/demo-client-01.svg', width: 128, height: 34 },
     image: '/projects/event-concept.svg',
     alt: 'Black and orange event ticket and identity artwork with the Penvo mark.',
     width: 1200,
@@ -142,6 +157,7 @@ export const homeProjects = [
     category: 'Packaging design concept',
     year: '2026',
     brand: 'Coffee concept',
+    logo: { src: '/projects/logos/demo-client-03.svg', width: 166, height: 38 },
     image: '/projects/coffee-concept.svg',
     alt: 'Illustrated coffee packaging with orange labels and geometric graphics.',
     width: 1200,
@@ -154,6 +170,7 @@ export const homeProjects = [
     category: 'Merchandise design concept',
     year: '2026',
     brand: 'Merch concept',
+    logo: { src: '/projects/logos/demo-client-04.svg', width: 138, height: 18 },
     image: '/projects/merch-concept.svg',
     alt: 'Illustrated tote bag carrying the Penvo monogram and graphic identity.',
     width: 1200,
@@ -166,6 +183,7 @@ export const homeProjects = [
     category: 'Social campaign concept',
     year: '2026',
     brand: 'Campaign concept',
+    logo: { src: '/projects/logos/demo-client-06.svg', width: 112, height: 42 },
     image: '/projects/social-concept.svg',
     alt: 'Orange and black social campaign artwork with bold graphic typography.',
     width: 1200,

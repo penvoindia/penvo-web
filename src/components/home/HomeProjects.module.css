@@ -4,8 +4,13 @@
     min(100cqw, var(--layout-max-width)) - (var(--layout-gutter) * 2)
   );
   --projects-gap: 20px;
+  --projects-section-space: 50px;
+  /* Matches --testimonial-card-padding. */
+  --projects-card-padding: 24px;
+  --projects-logo-width: 120px;
+  --projects-logo-height: 48px;
 
-  padding-block: var(--layout-section-space);
+  padding-block: var(--projects-section-space);
   /* Clip sideways only, so the cursor disc can overlap the strip's top and bottom. */
   overflow-x: clip;
   background: var(--color-background);
@@ -14,9 +19,30 @@
   container-type: inline-size;
 }
 
-/* The reference's spacer above the gallery. */
+/* Space between the heading row and the project gallery. */
 .header {
-  margin-bottom: 30px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  padding-bottom: 40px;
+}
+
+.headingCopy {
+  min-width: 0;
+}
+
+.explore {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.explore.headerExplore {
+  display: none;
+}
+
+.footer {
+  margin-top: 30px;
 }
 
 .eyebrow {
@@ -122,34 +148,62 @@
   -webkit-user-drag: none;
 }
 
-/* The hover cover: inset 10px and scaled like the reference mask. */
+/* The hover cover fills the card in white, like a hovered testimonial card. */
 .media::after {
   position: absolute;
-  inset: 10px;
-  background: var(--color-concrete);
+  inset: 0;
+  background: var(--color-surface-inverse);
   content: '';
   opacity: 0;
-  transform: scale(1.005);
   transition: opacity 300ms ease;
 }
 
-.caption {
+.overlay {
   position: absolute;
-  inset: 20px;
+  inset: var(--projects-card-padding);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: safe center;
-  overflow: hidden;
+  overflow: clip;
   color: var(--color-text-inverse);
-  text-align: center;
   pointer-events: none;
+}
+
+/* Logos use the space above the copy and shrink before they can overlap it. */
+.logoSlot {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.brandLogo {
+  display: block;
+  width: min(var(--projects-logo-width), 100%, 40cqw, 60cqh);
+  height: max(0px, calc(100% - 20px));
+  max-height: min(var(--projects-logo-height), 18cqh);
+  margin-inline-start: auto;
+  object-fit: contain;
+  object-position: right top;
+  -webkit-user-drag: none;
+}
+
+/* Lines stack up from the year and still read title, then year and category. */
+.caption {
+  display: flex;
+  flex: none;
+  flex-flow: column-reverse wrap;
+  align-content: flex-start;
+  width: 100%;
+  margin-top: auto;
+  row-gap: 5px;
+  overflow: clip;
 }
 
 /* Each line rises from its own clipped baseline and never shrinks. */
 .line {
   flex: none;
-  max-width: 100%;
+  width: 100%;
   overflow: hidden;
 }
 
@@ -159,10 +213,19 @@
   transition: transform 400ms ease;
 }
 
+.meta {
+  order: -1;
+  color: var(--color-pure-black);
+}
+
+.title {
+  font-size: 20px;
+  line-height: 28px;
+}
+
 .metadata {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
   white-space: nowrap;
 }
@@ -175,13 +238,10 @@
 
 .separator {
   flex: none;
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
   background: currentColor;
-}
-
-.title {
-  margin-top: 4px;
 }
 
 .clamp {
@@ -191,33 +251,28 @@
   -webkit-line-clamp: 3;
 }
 
-.category {
-  margin-top: 4px;
-  color: var(--color-super-grey);
-}
-
-.category .clamp {
-  -webkit-line-clamp: 2;
-}
-
-/* Short covers drop the byline, then the category, so no line is cut. */
-@container (max-height: 150px) {
-  .byline {
-    display: none;
-  }
-}
-
-@container (max-height: 135px) {
-  .category {
-    display: none;
-  }
-
+/*
+ * Short covers shorten the title to two lines, then one, so the title and year
+ * always fit whole. Each height adds the padding, the 24px year line and its
+ * 5px gap, and the title lines.
+ */
+@container (height < 161px) {
   .title .clamp {
     -webkit-line-clamp: 2;
   }
 }
 
+@container (height < 133px) {
+  .title .clamp {
+    -webkit-line-clamp: 1;
+  }
+}
+
 .card:focus-visible .media::after {
+  opacity: 1;
+}
+
+.card:focus-visible .logoSlot {
   opacity: 1;
 }
 
@@ -235,15 +290,13 @@
     opacity: 1;
   }
 
+  .card:hover .logoSlot {
+    opacity: 1;
+  }
+
   .card:hover .reveal {
     transform: none;
     transition-duration: 500ms;
-  }
-}
-
-@media (min-width: 480px) {
-  .header {
-    margin-bottom: 35px;
   }
 }
 
@@ -251,6 +304,10 @@
 @media (min-width: 768px) {
   .section {
     --projects-gap: 30px;
+    --projects-section-space: 70px;
+    --projects-card-padding: 32px;
+    --projects-logo-width: 140px;
+    --projects-logo-height: 56px;
     --projects-tablet-third: calc(
       (var(--projects-content) - (var(--projects-gap) * 2)) / 3
     );
@@ -260,7 +317,11 @@
   }
 
   .header {
-    margin-bottom: 45px;
+    padding-bottom: 50px;
+  }
+
+  .footer {
+    margin-top: 40px;
   }
 
   .grid {
@@ -279,20 +340,63 @@
     grid-row: var(--tablet-row) / span var(--tablet-rows);
     aspect-ratio: auto;
   }
+
+  /* 32px padding and 28px title lines from here. */
+  @container (height < 177px) {
+    .title .clamp {
+      -webkit-line-clamp: 2;
+    }
+  }
+
+  @container (height < 149px) {
+    .title .clamp {
+      -webkit-line-clamp: 1;
+    }
+  }
+
+  /* Below 121px, one title line and the year fit only inside 24px padding. */
+  @container (height < 121px) {
+    .overlay {
+      inset: 24px;
+    }
+  }
 }
 
-@media (min-width: 1024px) {
+@media (prefers-reduced-motion: reduce) {
+  .logoSlot {
+    transition: none;
+  }
+}
+
+@media (min-width: 1024px) and (orientation: landscape), (min-width: 1280px) {
+  .section {
+    --projects-section-space: 80px;
+  }
+
   .header {
-    margin-bottom: 50px;
+    padding-bottom: 60px;
+  }
+
+  .explore.headerExplore {
+    display: inline-flex;
+  }
+
+  .footer {
+    display: none;
   }
 }
 
 /* Desktop: four columns of twelve rows; a four-row cover is exactly 16:9. */
 @media (min-width: 1280px) {
   .section {
+    --projects-section-space: 100px;
     --projects-column: calc(
       (var(--projects-content) - (var(--projects-gap) * 3)) / 4
     );
+  }
+
+  .header {
+    padding-bottom: 70px;
   }
 
   .grid {
@@ -308,11 +412,5 @@
   .tile {
     grid-column: var(--desktop-column);
     grid-row: var(--desktop-row) / span var(--desktop-rows);
-  }
-}
-
-@media (min-width: 1440px) {
-  .header {
-    margin-bottom: 60px;
   }
 }

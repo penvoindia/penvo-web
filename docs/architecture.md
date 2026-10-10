@@ -32,7 +32,12 @@ with server-rendered process content and a small client controller for the
 desktop and tablet horizontal scroll progression.
 `HomeTestimonials` follows Approach with server-rendered testimonial cards
 and a small client wrapper for native horizontal scrolling controls.
-`HomeProjects` follows testimonials with server-rendered project cards and
+`HomeShowreel` follows testimonials with a server-rendered reel section. A
+small `ShowreelExperience` client component pins and scales the video frame on
+desktop, turns the page background from black to white around it, and manages
+playback while the frame is visible and uncovered in a visible tab. Reduced
+motion renders the static poster.
+`HomeProjects` follows the showreel with server-rendered project cards and
 CSS hover/focus covers. A small `ProjectsGallery` client wrapper adds native
 mouse dragging with the reference's free-mode momentum and edge resistance,
 and an overflow-aware desktop cursor. The server component accepts typed

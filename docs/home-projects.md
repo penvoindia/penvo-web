@@ -1,6 +1,6 @@
 # Home projects
 
-`HomeProjects` sits after testimonials and before the contact intro. The cards
+`HomeProjects` sits after the showreel and before the contact intro. The cards
 remain server-rendered; `ProjectsGallery` adds small native drag and cursor
 controllers. Images, fonts, colours, and page gutters belong to Penvo.
 
@@ -52,26 +52,43 @@ covers become two stacks of six, and no swipe lands on an empty half.
 
 ### Spacing
 
-The heading's distance to the gallery follows the reference's spacer: 60px from
-1440px, 50px from 1024px, 45px from 768px, 35px from 480px, and 30px below.
+The section uses local `--projects-section-space` padding above and below:
+100px on desktop from 1280px, 80px on landscape tablets from 1024px, 70px on
+portrait tablets from 768px (including 1024px portrait), and 50px on mobile
+below 768px.
+
+The header's bottom padding sets its distance to the gallery: 70px on desktop
+from 1280px, 60px on landscape tablets from 1024px, 50px on portrait tablets
+from 768px, and 40px on mobile below 768px. Portrait tablets retain the 50px
+gap at 1024px.
+
+An `Explore More` action uses Penvo's primary `ButtonLink` and links to `/work`.
+It sits opposite the heading from 1280px and on
+landscape tablets from 1024px. On mobile and portrait tablets, it sits below
+`ProjectsGallery`, left-aligned with the `layout-container`, with a 30px gap
+above it on mobile and 40px from 768px.
 
 ## Hover and focus
 
 On hover, the reference fades a 10px inset panel over the cover in 300ms,
 scales the photo from 1.005 to 1.07 over 500ms, and raises each text line from
 its own clipped baseline over 500ms (400ms on leaving), all with CSS `ease`.
-Penvo keeps these timings and geometry. The panel uses Concrete for the
-reference's warm off-white. The text block is inset 20px. Penvo adds the
-working year and brand above the title, separated by a small square. Titles use
-`type-heading-5` in the inverse text colour; the year and brand use
-`type-body-small`; categories use `type-body` in Super Grey, the closest token to
-the reference's light grey. Super Grey on Concrete is a low-contrast pairing, so
-reconsider it if categories become essential content. The year and brand stay on
-one line, ending a long brand with an ellipsis. Each cover is a size container:
-below 150px tall it drops the year and brand, and below 135px the category, with
-titles clamped to two lines, so no line is ever cut through. Keyboard focus
-reveals the same panel and draws Penvo's focus outline on an overlay above the
-image. A focused cover that is partly outside the strip scrolls fully into view,
+Penvo keeps these timings. Instead of the inset panel, it fills the whole cover
+with white, like a hovered testimonial card. The text sits at the bottom left,
+inside the testimonial card's padding of 24px (32px from 768px), and follows an
+editorial card pattern: the title using the `type-heading-5` family and weight
+at 20px with a 28px line-height, then the year and category in `type-body` at
+16px with a 24px line-height in pure black, separated by a small dot, with 5px
+between the title and metadata.
+The brand or concept label is not rendered; its `brand` field remains in the
+project metadata. The year-and-category line stays on one line,
+ending long text with an ellipsis. Each cover is a size container.
+Short covers shorten titles to two lines, then one, so the title and the year
+and category always fit; the thresholds add the padding, the title lines, and
+the year line and its gap. From 768px, covers under 121px tall return to 24px
+padding. The lines stack up from the bottom. No line is ever cut through.
+Keyboard focus reveals the same panel and draws
+Penvo's focus outline on an overlay above the image. A focused cover that is partly outside the strip scrolls fully into view,
 aligned with the frame; pointer presses never move the strip this way. The
 gallery region's own focus ring is drawn above the covers. Touch profiles show
 covers only, like the reference.
@@ -129,6 +146,26 @@ server-side parent, shows featured entries in editorial order, and caps them at
 `projectsLimit` (twelve). The section is omitted when none are featured. The
 preview collection remains the default until a real content source is
 connected; there is no CMS or new data-fetching dependency.
+
+Projects may include an optional `logo` object with `src`, `width`, and `height`.
+The twelve demo records use local SVG logos in `public/projects/logos`, with
+pure-black paths and transparent backgrounds. Each logo appears at the top
+right when the white hover or keyboard-focus cover appears. The full-cover
+vertical flex layout uses the caption's 24px inset (32px from 768px, returning
+to 24px on covers under 121px tall). A contained image box preserves the logo's
+proportions and measures at most 120 × 48px below 768px or 140 × 56px from
+768px. Its width is also limited to 40% of the card's width, 60% of the card's
+height, and the available inset width; its maximum height is 18% of the card's
+height. These relative limits keep logos smaller on small cards without
+changing the cover ratios or caption sizes. After reserving the bottom caption
+and a 20px gap, the available height can shrink to zero on the shortest covers,
+so the logo never crowds the text. The copied SVG viewBoxes fit the ink with one
+SVG unit of padding. Path geometry and original source files stay unchanged.
+The logo fades over 300ms with CSS `ease`, matching the white cover. Reduced
+motion disables that transition while retaining static hover and focus states.
+No JavaScript or client runtime is added for the logos. These demo assets
+illustrate preview concepts and do not assert actual brand associations or
+client relationships. The original project cover images remain unchanged.
 
 `projects-layout.ts` derives every placement from the selected records rather
 than a fixed count: desktop column and rows, tablet column, span, and rows, the

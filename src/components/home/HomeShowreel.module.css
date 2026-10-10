@@ -1,0 +1,68 @@
+/* No background: ShowreelExperience recolours the page behind the reel. */
+.section {
+  /* The reference's side padding: 5% on small phones, 4% on phones, 1% above. */
+  padding-inline: 5%;
+  color: var(--color-text-primary);
+}
+
+.stage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* The reference's 16:9 frame, up to 105rem wide. */
+.frame {
+  position: relative;
+  width: 100%;
+  max-width: 105rem;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--color-surface-secondary);
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 480px) {
+  .section {
+    padding-inline: 4%;
+  }
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-inline: 1%;
+  }
+
+  .frame {
+    border-radius: 16px;
+  }
+}
+
+/* From 992px: the reference's pinned reel. ShowreelExperience scales the frame. */
+@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  .section {
+    /* 140vh of pinning, plus the 100vh stage. */
+    height: 240vh;
+    /* The next section scrolls over the pinned reel for the last 100vh. */
+    margin-bottom: -100vh;
+  }
+
+  .stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  /* Positioned, so it paints above the sticky stage. */
+  .section + * {
+    position: relative;
+  }
+}

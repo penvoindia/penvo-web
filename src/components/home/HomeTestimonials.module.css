@@ -6,7 +6,8 @@
 
   padding-block: var(--testimonial-section-space);
   overflow: hidden;
-  background: var(--color-background);
+  /* No background: the black page shows through, and the showreel below
+     recolours it as the reel arrives. */
   color: var(--color-text-primary);
   color-scheme: dark;
 }

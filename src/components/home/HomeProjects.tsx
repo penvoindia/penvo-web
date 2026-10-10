@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
 
+import { ButtonLink } from '@/src/components/ui/Button';
+
 import {
   getFeaturedProjects,
   homeProjects,
@@ -63,10 +65,19 @@ export function HomeProjects({
     >
       <div className="layout-container">
         <div className={styles.header}>
-          <p className={`${styles.eyebrow} type-eyebrow`}>Work</p>
-          <h2 className="type-heading-1" id="home-projects-title">
-            Selected projects.
-          </h2>
+          <div className={styles.headingCopy}>
+            <p className={`${styles.eyebrow} type-eyebrow`}>Work</p>
+            <h2 className="type-heading-1" id="home-projects-title">
+              Selected projects.
+            </h2>
+          </div>
+          <ButtonLink
+            className={`${styles.explore} ${styles.headerExplore}`}
+            href="/work"
+            variant="primary"
+          >
+            Explore More
+          </ButtonLink>
         </div>
       </div>
       <ProjectsGallery>
@@ -79,7 +90,6 @@ export function HomeProjects({
           {placements.map(({ project, desktop, tablet, mobile }) => {
             const titleId = `project-${project.id}-title`;
             const metadataId = `project-${project.id}-metadata`;
-            const categoryId = `project-${project.id}-category`;
             const placement = {
               '--desktop-column': desktop.column,
               '--desktop-row': desktop.row,
@@ -100,7 +110,7 @@ export function HomeProjects({
                 style={placement}
               >
                 <figure
-                  aria-describedby={`${metadataId} ${categoryId}`}
+                  aria-describedby={metadataId}
                   aria-labelledby={titleId}
                   className={styles.card}
                   tabIndex={0}
@@ -124,33 +134,43 @@ export function HomeProjects({
                       }
                     />
                   </div>
-                  <figcaption className={styles.caption}>
-                    <p
-                      className={`${styles.line} ${styles.byline} type-body-small`}
-                      id={metadataId}
-                    >
-                      <span className={`${styles.reveal} ${styles.metadata}`}>
-                        <time dateTime={project.year}>{project.year}</time>
-                        <span aria-hidden="true" className={styles.separator} />
-                        <span>{project.brand}</span>
-                      </span>
-                    </p>
-                    <h3
-                      className={`${styles.line} ${styles.title} type-heading-5`}
-                      id={titleId}
-                    >
-                      <span className={`${styles.reveal} ${styles.clamp}`}>
-                        {project.title}
-                      </span>
-                    </h3>
-                    <p
-                      className={`${styles.line} ${styles.category} type-body`}
-                      id={categoryId}
-                    >
-                      <span className={`${styles.reveal} ${styles.clamp}`}>
-                        {project.category}
-                      </span>
-                    </p>
+                  <figcaption className={styles.overlay}>
+                    {project.logo && (
+                      <div aria-hidden="true" className={styles.logoSlot}>
+                        <Image
+                          alt=""
+                          className={styles.brandLogo}
+                          draggable={false}
+                          height={project.logo.height}
+                          loading="lazy"
+                          src={project.logo.src}
+                          width={project.logo.width}
+                        />
+                      </div>
+                    )}
+                    <div className={styles.caption}>
+                      <h3
+                        className={`${styles.line} ${styles.title} type-heading-5`}
+                        id={titleId}
+                      >
+                        <span className={`${styles.reveal} ${styles.clamp}`}>
+                          {project.title}
+                        </span>
+                      </h3>
+                      <p
+                        className={`${styles.line} ${styles.meta} type-body`}
+                        id={metadataId}
+                      >
+                        <span className={`${styles.reveal} ${styles.metadata}`}>
+                          <time dateTime={project.year}>{project.year}</time>
+                          <span
+                            aria-hidden="true"
+                            className={styles.separator}
+                          />
+                          <span>{project.category}</span>
+                        </span>
+                      </p>
+                    </div>
                   </figcaption>
                 </figure>
               </li>
@@ -158,6 +178,11 @@ export function HomeProjects({
           })}
         </ul>
       </ProjectsGallery>
+      <div className={`${styles.footer} layout-container`}>
+        <ButtonLink className={styles.explore} href="/work" variant="primary">
+          Explore More
+        </ButtonLink>
+      </div>
     </section>
   );
 }
