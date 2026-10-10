@@ -26,6 +26,6 @@ export function layoutProjects(
   return projects.map((project, index) => ({
     project,
     column: Math.floor(index / 2) + 1,
-    ...coverFrames[index % coverFrames.length],
+    ...coverFrames[index % coverFrames.length]!,
   }));
 }

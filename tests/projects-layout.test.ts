@@ -8,7 +8,7 @@ import { layoutProjects } from '@/src/components/home/projects-layout';
 
 function projects(count: number): Project[] {
   return Array.from({ length: count }, (_, index) => ({
-    ...homeProjects[index % homeProjects.length],
+    ...homeProjects[index % homeProjects.length]!,
     id: String(index),
   }));
 }
@@ -23,7 +23,7 @@ describe('project cover composition', () => {
     ]);
 
     for (let index = 6; index < layout.length; index++) {
-      const original = firstGroup[index % 6];
+      const original = firstGroup[index % 6]!;
       expect(layout[index]).toMatchObject({
         column: original.column + Math.floor(index / 6) * 3,
         rowStart: original.rowStart,
@@ -67,7 +67,7 @@ describe('project cover composition', () => {
 
       for (let column = 1; column <= Math.ceil(count / 2); column++) {
         const cards = layout.filter((card) => card.column === column);
-        expect(cards[0].rowStart).toBe(1);
+        expect(cards[0]!.rowStart).toBe(1);
         const occupied = new Set<number>();
         for (const card of cards) {
           for (
@@ -81,7 +81,7 @@ describe('project cover composition', () => {
             occupied.add(row);
           }
         }
-        const expectedRows = cards.length === 2 ? 12 : cards[0].rowSpan;
+        const expectedRows = cards.length === 2 ? 12 : cards[0]!.rowSpan;
         expect([...occupied].sort((a, b) => a - b)).toEqual(
           Array.from({ length: expectedRows }, (_, index) => index + 1),
         );
@@ -100,9 +100,9 @@ describe('project cover composition', () => {
 
       expect(layout).toHaveLength(count);
       expect(layout.at(-1)).toMatchObject({
-        shape: complete[count - 1].shape,
-        rowStart: complete[count - 1].rowStart,
-        rowSpan: complete[count - 1].rowSpan,
+        shape: complete[count - 1]!.shape,
+        rowStart: complete[count - 1]!.rowStart,
+        rowSpan: complete[count - 1]!.rowSpan,
       });
       expect(layout.at(-1)?.rowSpan).toBeLessThan(12);
       expect(source).toHaveLength(count);
